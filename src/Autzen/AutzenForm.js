@@ -1,6 +1,7 @@
 import React from "react";
 import { Form, InputNumber, Button, Table, Typography } from "antd";
 import { TileDBQuery } from "@tiledb-inc/tiledb-cloud";
+import LidarVis from "../components/LidarVis";
 
 const QueryHelper = new TileDBQuery({
   apiKey: process.env.REACT_APP_API_KEY_PROD,
@@ -148,6 +149,7 @@ const GtexForm = () => {
 
   return (
     <>
+    {!!results.length && <LidarVis data={results} />}
       <Form
         form={form}
         name="basic"
