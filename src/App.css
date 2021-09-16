@@ -1,7 +1,13 @@
 @import '~antd/dist/antd.css';
 
 .App {
+  display: flex;
+  margin-top: 4px;
+}
+
+.App__main {
   padding: 32px;
+  width: 100%;
 }
 
 .App-logo {
