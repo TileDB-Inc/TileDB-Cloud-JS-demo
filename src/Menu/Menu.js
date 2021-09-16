@@ -1,7 +1,8 @@
 import React from "react";
 import { Menu } from "antd";
 import {
-  DotChartOutlined
+  DotChartOutlined,
+  RadarChartOutlined
 } from "@ant-design/icons";
 
 const MenuComponent = ({ onClick }) => {
@@ -12,6 +13,9 @@ const MenuComponent = ({ onClick }) => {
       </Menu.Item>
       <Menu.Item onClick={() => onClick('gtex')} key="2" icon={<DotChartOutlined />}>
         Gtex
+      </Menu.Item>
+      <Menu.Item onClick={() => onClick('lidar')} key="3" icon={<RadarChartOutlined />}>
+        Lidar
       </Menu.Item>
     </Menu>
   );

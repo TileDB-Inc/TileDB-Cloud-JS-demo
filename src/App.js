@@ -1,5 +1,6 @@
 import React from "react";
 import "./App.css";
+import Autzen from "./Autzen";
 import Gtex from "./Gtex";
 import Header from "./Header";
 import Intro from "./Intro";
@@ -8,6 +9,7 @@ import Menu from "./Menu";
 const pages = {
   intro: "intro",
   gtex: "gtex",
+  lidar: "lidar",
 };
 
 function App() {
@@ -22,6 +24,8 @@ function App() {
           {page === pages.intro && <Intro />}
 
           {page === pages.gtex && <Gtex />}
+
+          {page === pages.lidar && <Autzen />}
         </main>
       </div>
     </div>

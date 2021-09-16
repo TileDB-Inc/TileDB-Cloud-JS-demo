@@ -101,7 +101,7 @@ const GtexForm = () => {
         </Form.Item>
 
         <Form.Item wrapperCol={{ offset: 3, span: 16 }}>
-          <Button type="primary" htmlType="submit" loading={loading}>
+          <Button style={{marginRight: '15px'}} type="primary" htmlType="submit" loading={loading}>
             Submit
           </Button>
           <Button htmlType="button" onClick={onReset}>
