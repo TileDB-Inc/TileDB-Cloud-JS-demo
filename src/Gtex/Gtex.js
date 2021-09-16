@@ -1,6 +1,5 @@
 import * as React from "react";
 import { Typography, Divider } from "antd";
-import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { materialOceanic } from "react-syntax-highlighter/dist/esm/styles/prism";
 import GtexForm from "./GtexForm";
@@ -53,6 +52,7 @@ const Gtex = () => {
       <SyntaxHighlighter language="javascript" style={materialOceanic}>
         {markdown}
       </SyntaxHighlighter>
+      <Divider />
       <GtexForm />
     </>
   );
