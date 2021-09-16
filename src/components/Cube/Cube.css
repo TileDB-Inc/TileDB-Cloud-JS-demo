@@ -1,0 +1,25 @@
+.Cell {
+    border: 1px solid #222;
+    height: 100px;
+    flex-basis: 25%;
+    transition: background-color 0.3s ease-in-out;
+    color: #fff;
+    padding: 5px;
+}
+
+.Cell:hover {
+    background-color: rgba(77, 159, 255, .15);
+    cursor: pointer;
+}
+
+.Cell.active {
+    background-color: rgba(77, 159, 255, 1);
+}
+
+
+.Cube {
+    display: flex;
+    flex-wrap: wrap;
+    width: 400px;
+    margin: 0 auto;
+}

@@ -2,6 +2,7 @@ import React from "react";
 import "./App.css";
 import Autzen from "./Autzen";
 import Boulder from "./Boulder";
+import SparseWrite from "./SparseWrite";
 import Gtex from "./Gtex";
 import Header from "./Header";
 import Intro from "./Intro";
@@ -12,7 +13,7 @@ const pages = {
   gtex: "gtex",
   lidar: "lidar",
   boulder: "boulder",
-  
+  sparseWrite: "sparseWrite",
 };
 
 function App() {
@@ -31,6 +32,8 @@ function App() {
           {page === pages.lidar && <Autzen />}
 
           {page === pages.boulder && <Boulder />}
+
+          {page === pages.sparseWrite && <SparseWrite />}
         </main>
       </div>
     </div>
