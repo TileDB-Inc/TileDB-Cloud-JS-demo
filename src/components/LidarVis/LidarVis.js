@@ -21,13 +21,6 @@ function minMaxArray(arr, idx) {
   return { max: max, min: min };
 }
 
-/**
- * Will run on every frame render.  We are spinning the box on y-axis.
- */
-const onRender = (scene) => {
-  console.log("onRender");
-};
-
 const LidarVis = ({ data }) => {
   const [canvas, setCanvas] = React.useState(null);
   const {max: maxX, min: minX} = minMaxArray(data, 'X');
@@ -69,8 +62,7 @@ const LidarVis = ({ data }) => {
       <SceneComponent
         antialias
         onSceneReady={onSceneReady}
-        onRender={onRender}
-        id="my-canvas"
+        id="lidar-vis-canvas"
         setCanvas={setCanvas}
       />
     </div>

@@ -1,6 +1,7 @@
 import React from "react";
 import "./App.css";
 import Autzen from "./Autzen";
+import Boulder from "./Boulder";
 import Gtex from "./Gtex";
 import Header from "./Header";
 import Intro from "./Intro";
@@ -10,6 +11,8 @@ const pages = {
   intro: "intro",
   gtex: "gtex",
   lidar: "lidar",
+  boulder: "boulder",
+  
 };
 
 function App() {
@@ -26,6 +29,8 @@ function App() {
           {page === pages.gtex && <Gtex />}
 
           {page === pages.lidar && <Autzen />}
+
+          {page === pages.boulder && <Boulder />}
         </main>
       </div>
     </div>
