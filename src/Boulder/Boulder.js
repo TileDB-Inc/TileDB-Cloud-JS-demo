@@ -11,7 +11,7 @@ const markdown = `
 const { TileDBQuery } = require("@tiledb-inc/tiledb-cloud");
 
 
-const QueryHelper = new TileDBQuery({
+const tiledbQuery = new TileDBQuery({
     apiKey: ''
 });
 
@@ -25,13 +25,13 @@ const query = {
     bufferSize: 15000000000000,
 };
 
-QueryHelper.ReadQuery("TileDB-Inc", "boulder", query)
-.then((res) => {
-    console.log(res);
-})
-.catch((e) => {
-    console.error(e);
-});
+(async function() {
+  // Iterate over all results in case query is incomplete
+  for await (let results of tiledbQuery.ReadQuery("TileDB-Inc", "boulder", query)) {
+      console.log(results);
+  }
+})();
+
 `;
 
 const Boulder = () => {

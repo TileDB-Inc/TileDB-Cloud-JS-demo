@@ -93,7 +93,8 @@ const BoulderForm = () => {
   const [results, setResults] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
   const [form] = Form.useForm();
-  const onFinish = (values) => {
+  const onFinish = async (values) => {
+    setResults([]);
     const ranges = [
       [values.X_start, values.X_end].filter(Boolean),
       [values.Y_start, values.Y_end].filter(Boolean),
@@ -103,40 +104,44 @@ const BoulderForm = () => {
     const query = {
       layout: "row-major",
       ranges: ranges,
-      bufferSize: 15000000000000,
+      bufferSize: values.bufferSize,
     };
     setLoading(true);
 
-    QueryHelper.ReadQuery("TileDB-Inc", "boulder", query)
-      .then((res) => {
-        const result = res.Blue.map((t, i) => ({
-          Blue: t,
-          UserData: res.UserData[i],
-          ScanDirectionFlag: res.ScanDirectionFlag[i],
-          ScanAngleRank: res.ScanAngleRank[i],
-          ReturnNumber: res.ReturnNumber[i],
-          Red: res.Red[i],
-          PointSourceId: res.PointSourceId[i],
-          NumberOfReturns: res.NumberOfReturns[i],
-          Intensity: res.Intensity[i],
-          Green: res.Green[i],
-          GpsTime: res.GpsTime[i],
-          EdgeOfFlightLine: res.EdgeOfFlightLine[i],
-          Classification: res.Classification[i],
-          X: res.X[i],
-          Y: res.Y[i],
-          Z: res.Z[i],
-          key: i,
-        }));
-        console.log(result);
-        setResults(result);
-      })
-      .catch((e) => {
-        console.error(e);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+
+    for await (let results of QueryHelper.ReadQuery(
+      "TileDB-Inc",
+      "boulder",
+      query
+    )) {
+      // In case the results are null
+      if (!Array.isArray(results.Blue)) {
+        continue;
+      }
+      const result = results.Blue.map((t, i) => ({
+        Blue: t,
+        UserData: results.UserData[i],
+        ScanDirectionFlag: results.ScanDirectionFlag[i],
+        ScanAngleRank: results.ScanAngleRank[i],
+        ReturnNumber: results.ReturnNumber[i],
+        Red: results.Red[i],
+        PointSourceId: results.PointSourceId[i],
+        NumberOfReturns: results.NumberOfReturns[i],
+        Intensity: results.Intensity[i],
+        Green: results.Green[i],
+        GpsTime: results.GpsTime[i],
+        EdgeOfFlightLine: results.EdgeOfFlightLine[i],
+        Classification: results.Classification[i],
+        X: results.X[i],
+        Y: results.Y[i],
+        Z: results.Z[i],
+        key: i,
+      }));
+      console.log(result);
+      setResults((res) => res.concat(result));
+    }
+
+    setLoading(false);
   };
 
   const onFinishFailed = (errorInfo) => {
@@ -159,11 +164,15 @@ const BoulderForm = () => {
         initialValues={{
           X_start: 475425,
           X_end: 475450,
+          bufferSize: 2000000,
         }}
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
         autoComplete="off"
       >
+        <Form.Item label="Buffer size" name="bufferSize">
+          <InputNumber />
+        </Form.Item>
         <Form.Item label="X Start" name="X_start">
           <InputNumber />
         </Form.Item>

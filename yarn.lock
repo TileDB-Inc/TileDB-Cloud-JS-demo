@@ -1738,10 +1738,10 @@
   dependencies:
     "@babel/runtime" "^7.12.5"
 
-"@tiledb-inc/tiledb-cloud@^1.0.0-beta.1":
-  "integrity" "sha512-jlHty99FJbrF8rqPR1mKh1TZgbyC9s3jKss0t2o/cVbtlynDdFcXR4y1yr1t2vSXDQPL0szxuOSUGiYaFQ3LRQ=="
-  "resolved" "https://registry.npmjs.org/@tiledb-inc/tiledb-cloud/-/tiledb-cloud-1.0.0-beta.1.tgz"
-  "version" "1.0.0-beta.1"
+"@tiledb-inc/tiledb-cloud@^1.0.0-beta.2":
+  "integrity" "sha512-0qGGfSp5zkKAWMxUp9ZYSATXSIJHcRBmF9hHUCxkHG2nxjtMBTSbeVAbK/FstRuahBlG/XcM4TxCaeEg6Sflcg=="
+  "resolved" "https://registry.npmjs.org/@tiledb-inc/tiledb-cloud/-/tiledb-cloud-1.0.0-beta.2.tgz"
+  "version" "1.0.0-beta.2"
   dependencies:
     "axios" "^0.21.1"
     "capnp-ts" "^0.4.0"

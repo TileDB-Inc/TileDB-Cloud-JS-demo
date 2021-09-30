@@ -41,8 +41,14 @@ const GtexForm = () => {
     };
     setLoading(true);
 
-    QueryHelper.ReadQuery("kostas", "gtex-analysis-rnaseqc-gene-tpm", query)
-      .then((res) => {
+    const generator = QueryHelper.ReadQuery(
+      "kostas",
+      "gtex-analysis-rnaseqc-gene-tpm",
+      query
+    );
+    generator
+      .next()
+      .then(({ value: res }) => {
         const result = res.tpm.map((t, i) => ({
           tpm: t,
           sample: res.sample[i],
@@ -101,7 +107,12 @@ const GtexForm = () => {
         </Form.Item>
 
         <Form.Item wrapperCol={{ offset: 3, span: 16 }}>
-          <Button style={{marginRight: '15px'}} type="primary" htmlType="submit" loading={loading}>
+          <Button
+            style={{ marginRight: "15px" }}
+            type="primary"
+            htmlType="submit"
+            loading={loading}
+          >
             Submit
           </Button>
           <Button htmlType="button" onClick={onReset}>
@@ -109,7 +120,11 @@ const GtexForm = () => {
           </Button>
         </Form.Item>
       </Form>
-      {!!results.length && <Typography.Title level={5}>Showing {results.length} results</Typography.Title>}
+      {!!results.length && (
+        <Typography.Title level={5}>
+          Showing {results.length} results
+        </Typography.Title>
+      )}
       <Table dataSource={results} columns={columns} />
     </>
   );
