@@ -1,5 +1,14 @@
 import React from "react";
-import { Typography, Divider, Button, message, Modal, Form, InputNumber, Spin } from "antd";
+import {
+  Typography,
+  Divider,
+  Button,
+  message,
+  Modal,
+  Form,
+  InputNumber,
+  Spin,
+} from "antd";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { materialOceanic } from "react-syntax-highlighter/dist/esm/styles/prism";
 import Cube from "../components/Cube";
@@ -48,10 +57,14 @@ const SparseWrite = () => {
   const [loading, setLoading] = React.useState(false);
   const [writeloading, setWriteLoading] = React.useState(false);
   const [isModalVisible, setIsModalVisible] = React.useState(false);
-  const [SelectedCellData, setSelectedCellData] = React.useState({x: -1, y: -1, cellData: undefined})
+  const [SelectedCellData, setSelectedCellData] = React.useState({
+    x: -1,
+    y: -1,
+    cellData: undefined,
+  });
 
   const showModal = (x, y, cellData) => {
-    setSelectedCellData({x, y, cellData})
+    setSelectedCellData({ x, y, cellData });
     setIsModalVisible(true);
   };
 
@@ -74,10 +87,16 @@ const SparseWrite = () => {
     };
     setLoading(true);
 
-    QueryHelper.ReadQuery("kostas", "quickstart_sparse_array", query)
-      .then((res) => {
-          console.log(res)
-        setData(res);
+    const generator = QueryHelper.ReadQuery(
+      "kostas",
+      "quickstart_sparse_array",
+      query
+    );
+    generator
+      .next()
+      .then(({ value }) => {
+        console.log(value);
+        setData(value);
       })
       .catch((e) => {
         message.error(e);
@@ -89,32 +108,32 @@ const SparseWrite = () => {
 
   const onFinish = (values) => {
     const query = {
-        layout: "unordered",
-        values: {
-            a: {
-                values: [values.a]
-            },
-            rows: {
-                values: [SelectedCellData.y]
-            },
-            cols: {
-                values: [SelectedCellData.x]
-            },
-        }
-      }
-      setWriteLoading(true);
+      layout: "unordered",
+      values: {
+        a: {
+          values: [values.a],
+        },
+        rows: {
+          values: [SelectedCellData.y],
+        },
+        cols: {
+          values: [SelectedCellData.x],
+        },
+      },
+    };
+    setWriteLoading(true);
     QueryHelper.WriteQuery("kostas", "quickstart_sparse_array", query)
-    .then((res) => {
+      .then((res) => {
         getArray();
         handleOk();
-    })
-    .catch((e) => {
+      })
+      .catch((e) => {
         console.error(e);
-    })
-    .finally(() => {
+      })
+      .finally(() => {
         setWriteLoading(false);
-    })
-  }
+      });
+  };
   return (
     <div>
       <Title>Sparse array write</Title>
@@ -131,30 +150,44 @@ const SparseWrite = () => {
         Get array data
       </Button>
       {!!Object.keys(data).length && (
-      <Spin spinning={loading} tip="Loading...">
-        <Cube dimensions={4} data={data} dimensionNames={["rows", "cols"]} onClick={showModal} />
-      </Spin>
+        <Spin spinning={loading} tip="Loading...">
+          <Cube
+            dimensions={4}
+            data={data}
+            dimensionNames={["rows", "cols"]}
+            onClick={showModal}
+          />
+        </Spin>
       )}
-      <Modal footer={[
-        <Button form="cell-form" key="submit" htmlType="submit" loading={writeloading}>
+      <Modal
+        footer={[
+          <Button
+            form="cell-form"
+            key="submit"
+            htmlType="submit"
+            loading={writeloading}
+          >
             Submit
-        </Button>
-        ]} title={`Cell colls: ${SelectedCellData.x} rows: ${SelectedCellData.y}`} visible={isModalVisible} onCancel={handleCancel}>
-      <Form
-        id="cell-form"
-        name="basic"
-        labelCol={{ span: 6 }}
-        wrapperCol={{ span: 32 }}
-        style={{ marginTop: "32px" }}
-        onFinish={onFinish}
-        autoComplete="off"
+          </Button>,
+        ]}
+        title={`Cell colls: ${SelectedCellData.x} rows: ${SelectedCellData.y}`}
+        visible={isModalVisible}
+        onCancel={handleCancel}
       >
-        <Form.Item label="Attribute a" name="a">
-          <InputNumber style={{ width: 200 }} />
-        </Form.Item>
-      </Form>
+        <Form
+          id="cell-form"
+          name="basic"
+          labelCol={{ span: 6 }}
+          wrapperCol={{ span: 32 }}
+          style={{ marginTop: "32px" }}
+          onFinish={onFinish}
+          autoComplete="off"
+        >
+          <Form.Item label="Attribute a" name="a">
+            <InputNumber style={{ width: 200 }} />
+          </Form.Item>
+        </Form>
       </Modal>
-      
     </div>
   );
 };
