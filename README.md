@@ -8,7 +8,11 @@ Run `npm install` to install the dependencies needed for this demo. To install [
 
 `npm i @tiledb-inc/tiledb-cloud@beta`
 
-### Running the demo `npm start`
+### Running the demo
+
+Start the demo with:
+
+`npm start`
 
 Runs the app in the development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
