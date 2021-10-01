@@ -12,19 +12,21 @@ import {
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { materialOceanic } from "react-syntax-highlighter/dist/esm/styles/prism";
 import Cube from "../components/Cube";
-import { TileDBQuery } from "@tiledb-inc/tiledb-cloud";
+import { TileDBQuery, v1 } from "@tiledb-inc/tiledb-cloud";
 
-const { Title } = Typography;
+const { Title, Paragraph } = Typography;
 
-const QueryHelper = new TileDBQuery({
-  apiKey: process.env.REACT_APP_API_KEY,
-  basePath: "https://api.dev.tiledb.io/v2",
-});
+const config = {
+  apiKey: process.env.REACT_APP_API_KEY_PROD,
+}
+
+const QueryHelper = new TileDBQuery(config);
+const arrayAPI = new v1.ArrayApi(config);
 
 const markdown = `
 const { TileDBQuery } = require("@tiledb-inc/tiledb-cloud");
 
-const QueryHelper = new TileDBQuery({
+const tiledbQueries = new TileDBQuery({
     apiKey: ''
 });
 
@@ -43,7 +45,7 @@ const query = {
     }
   }
   
-QueryHelper.WriteQuery("kostas", "quickstart_sparse_array", query)
+tiledbQueries.WriteQuery("TileDB", "quickstart_sparse_array", query)
 .then((res) => {
     console.log(res)
 })
@@ -52,7 +54,7 @@ QueryHelper.WriteQuery("kostas", "quickstart_sparse_array", query)
 });
 `;
 
-const SparseWrite = () => {
+const QuickstartWrite = () => {
   const [data, setData] = React.useState({});
   const [loading, setLoading] = React.useState(false);
   const [writeloading, setWriteLoading] = React.useState(false);
@@ -62,6 +64,27 @@ const SparseWrite = () => {
     y: -1,
     cellData: undefined,
   });
+  const [dimensions, setDimensions] = React.useState([]);
+  const [attributes, setAttributes] = React.useState([]);
+  // const [queryString, setQueryString] = React.useState('');
+  const quickStartArray = process.env.REACT_APP_QUICKSTART_ARRAY || '';
+  const [namespace, arrayName] = quickStartArray.split("/");
+
+  React.useEffect(() => {
+    if (!quickStartArray) {
+      message.error(
+        "Environmental variable REACT_APP_QUICKSTART_ARRAY is needed for this example to work"
+      );
+    } else {
+      // Get arraySchema
+      arrayAPI.getArray(namespace, arrayName, 'application/json').then((res) => {
+        const dimensionNames = res.data.domain.dimensions.map((dim) => dim.name);
+        const attributeNames = res.data.attributes.map((attr) => attr.name);
+        setDimensions(dimensionNames);
+        setAttributes(attributeNames);
+      })
+    }
+  }, [quickStartArray, arrayName, namespace]);
 
   const showModal = (x, y, cellData) => {
     setSelectedCellData({ x, y, cellData });
@@ -87,11 +110,7 @@ const SparseWrite = () => {
     };
     setLoading(true);
 
-    const generator = QueryHelper.ReadQuery(
-      "kostas",
-      "quickstart_sparse_array",
-      query
-    );
+    const generator = QueryHelper.ReadQuery(namespace, arrayName, query);
     generator
       .next()
       .then(({ value }) => {
@@ -110,19 +129,22 @@ const SparseWrite = () => {
     const query = {
       layout: "unordered",
       values: {
-        a: {
-          values: [values.a],
-        },
-        rows: {
+        [dimensions[0]]: {
           values: [SelectedCellData.y],
         },
-        cols: {
+        [dimensions[1]]: {
           values: [SelectedCellData.x],
         },
       },
     };
+
+    Object.entries(values).forEach(([key, val]) => {
+      query.values[key] = {};
+      query.values[key].values = [val];
+    });
+
     setWriteLoading(true);
-    QueryHelper.WriteQuery("kostas", "quickstart_sparse_array", query)
+    QueryHelper.WriteQuery(namespace, arrayName, query)
       .then((res) => {
         getArray();
         handleOk();
@@ -142,6 +164,7 @@ const SparseWrite = () => {
         {markdown}
       </SyntaxHighlighter>
       <Divider />
+      <Paragraph>Press the "Get array data" button to see your array as an interactive cube.<br/>You can edit any of the cells by clicking on them and assigning a new value.</Paragraph>
       <Button
         style={{ marginBottom: "20px" }}
         onClick={getArray}
@@ -154,7 +177,7 @@ const SparseWrite = () => {
           <Cube
             dimensions={4}
             data={data}
-            dimensionNames={["rows", "cols"]}
+            dimensionNames={dimensions}
             onClick={showModal}
           />
         </Spin>
@@ -182,14 +205,17 @@ const SparseWrite = () => {
           style={{ marginTop: "32px" }}
           onFinish={onFinish}
           autoComplete="off"
+          key={`${SelectedCellData.x}+${SelectedCellData.y}`}
         >
-          <Form.Item label="Attribute a" name="a">
-            <InputNumber style={{ width: 200 }} />
-          </Form.Item>
+          {attributes.map((attr) => (
+            <Form.Item label={`Attribute ${attr}`} name={attr}>
+              <InputNumber style={{ width: 200 }} />
+            </Form.Item>
+          ))}
         </Form>
       </Modal>
     </div>
   );
 };
 
-export default SparseWrite;
+export default QuickstartWrite;

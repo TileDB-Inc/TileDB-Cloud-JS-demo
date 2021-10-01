@@ -26,10 +26,10 @@ const MenuComponent = ({ onClick }) => {
         Boulder
       </Menu.Item>
       <Menu.Item
-        onClick={() => onClick("sparseWrite")}
+        onClick={() => onClick("writeInteractive")}
         key="5"
       >
-        Write sparse
+        Writes (interactive example)
       </Menu.Item>
     </Menu>
   );

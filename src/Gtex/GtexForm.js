@@ -2,9 +2,8 @@ import React from "react";
 import { Form, Input, Button, Table, Typography } from "antd";
 import { TileDBQuery } from "@tiledb-inc/tiledb-cloud";
 
-const QueryHelper = new TileDBQuery({
-  apiKey: process.env.REACT_APP_API_KEY,
-  basePath: "https://api.dev.tiledb.io/v2",
+const tiledbQuery = new TileDBQuery({
+  apiKey: process.env.REACT_APP_API_KEY_PROD,
 });
 
 const columns = [
@@ -41,8 +40,8 @@ const GtexForm = () => {
     };
     setLoading(true);
 
-    const generator = QueryHelper.ReadQuery(
-      "kostas",
+    const generator = tiledbQuery.ReadQuery(
+      "TileDB-Inc",
       "gtex-analysis-rnaseqc-gene-tpm",
       query
     );

@@ -3,7 +3,7 @@ import { Form, InputNumber, Button, Table, Typography } from "antd";
 import { TileDBQuery } from "@tiledb-inc/tiledb-cloud";
 import LidarVis from "../components/LidarVis";
 
-const QueryHelper = new TileDBQuery({
+const tiledbQuery = new TileDBQuery({
   apiKey: process.env.REACT_APP_API_KEY_PROD,
 });
 
@@ -109,7 +109,7 @@ const BoulderForm = () => {
     setLoading(true);
 
 
-    for await (let results of QueryHelper.ReadQuery(
+    for await (let results of tiledbQuery.ReadQuery(
       "TileDB-Inc",
       "boulder",
       query

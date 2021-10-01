@@ -3,7 +3,7 @@ import { Form, InputNumber, Button, Table, Typography } from "antd";
 import { TileDBQuery } from "@tiledb-inc/tiledb-cloud";
 import LidarVis from "../components/LidarVis";
 
-const QueryHelper = new TileDBQuery({
+const tiledbQuery = new TileDBQuery({
   apiKey: process.env.REACT_APP_API_KEY_PROD,
 });
 
@@ -109,8 +109,8 @@ const AutzenForm = () => {
     };
     setLoading(true);
 
-    for await (let results of QueryHelper.ReadQuery(
-      "norman",
+    for await (let results of tiledbQuery.ReadQuery(
+      "TileDB-Inc",
       "autzen_tiledb",
       query
     )) {

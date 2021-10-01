@@ -27,7 +27,7 @@ const query = {
 
 (async function() {
   // Iterate over all results in case query is incomplete
-  for await (let results of tiledbQuery.ReadQuery("kostas", "gtex-analysis-rnaseqc-gene-tpm", query)) {
+  for await (let results of tiledbQuery.ReadQuery("TileDB-Inc", "gtex-analysis-rnaseqc-gene-tpm", query)) {
       console.log(results);
   }
 })();

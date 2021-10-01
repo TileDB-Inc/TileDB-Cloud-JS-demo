@@ -27,7 +27,7 @@ const query = {
 
 (async function() {
   // Iterate over all results in case query is incomplete
-  for await (let results of tiledbQuery.ReadQuery("norman", "autzen_tiledb", query)) {
+  for await (let results of tiledbQuery.ReadQuery("TileDB-Inc", "autzen_tiledb", query)) {
       console.log(results);
   }
 })();

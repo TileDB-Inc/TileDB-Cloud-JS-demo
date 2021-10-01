@@ -2,7 +2,7 @@ import React from "react";
 import "./App.css";
 import Autzen from "./Autzen";
 import Boulder from "./Boulder";
-import SparseWrite from "./SparseWrite";
+import QuickstartWrite from "./QuickstartWrite";
 import Gtex from "./Gtex";
 import Header from "./Header";
 import Intro from "./Intro";
@@ -13,7 +13,7 @@ const pages = {
   gtex: "gtex",
   lidar: "lidar",
   boulder: "boulder",
-  sparseWrite: "sparseWrite",
+  writeInteractive: "writeInteractive",
 };
 
 function App() {
@@ -33,7 +33,7 @@ function App() {
 
           {page === pages.boulder && <Boulder />}
 
-          {page === pages.sparseWrite && <SparseWrite />}
+          {page === pages.writeInteractive && <QuickstartWrite />}
         </main>
       </div>
     </div>

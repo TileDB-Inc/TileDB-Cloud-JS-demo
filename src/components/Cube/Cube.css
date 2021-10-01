@@ -16,10 +16,15 @@
     background-color: rgba(77, 159, 255, 1);
 }
 
+.Cell span {
+    color: #fff;
+    display: block;
+}
 
 .Cube {
+    box-shadow: 0 0 30px rgb(0 0 0 / 30%);
     display: flex;
     flex-wrap: wrap;
-    width: 400px;
     margin: 0 auto;
+    width: 400px;
 }
