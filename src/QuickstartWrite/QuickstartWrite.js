@@ -54,6 +54,21 @@ tiledbQueries.WriteQuery("TileDB", "quickstart_sparse_array", query)
 });
 `;
 
+
+const createWriteQuery = (query, namespace, name) => `
+const { TileDBQuery } = require("@tiledb-inc/tiledb-cloud");
+const tiledbQueries = new TileDBQuery({
+  apiKey: ''
+});
+
+const query = ${query};
+
+tiledbQueries.WriteQuery(${namespace}, ${name}, query)
+.then((res) => {
+  console.log(res)
+});
+`
+
 const QuickstartWrite = () => {
   const [data, setData] = React.useState({});
   const [loading, setLoading] = React.useState(false);
@@ -66,7 +81,7 @@ const QuickstartWrite = () => {
   });
   const [dimensions, setDimensions] = React.useState([]);
   const [attributes, setAttributes] = React.useState([]);
-  // const [queryString, setQueryString] = React.useState('');
+  const [queryString, setQueryString] = React.useState('');
   const quickStartArray = process.env.REACT_APP_QUICKSTART_ARRAY || '';
   const [namespace, arrayName] = quickStartArray.split("/");
 
@@ -85,6 +100,17 @@ const QuickstartWrite = () => {
       })
     }
   }, [quickStartArray, arrayName, namespace]);
+
+
+  React.useEffect(() => {
+    if (queryString) {
+      message.info(
+        <SyntaxHighlighter language="javascript" style={materialOceanic}>
+        {queryString}
+      </SyntaxHighlighter>
+      )
+    }
+  }, [queryString])
 
   const showModal = (x, y, cellData) => {
     setSelectedCellData({ x, y, cellData });
@@ -143,6 +169,8 @@ const QuickstartWrite = () => {
       query.values[key].values = [val];
     });
 
+    setQueryString(createWriteQuery(JSON.stringify(query), namespace, arrayName));
+
     setWriteLoading(true);
     QueryHelper.WriteQuery(namespace, arrayName, query)
       .then((res) => {
@@ -154,6 +182,7 @@ const QuickstartWrite = () => {
       })
       .finally(() => {
         setWriteLoading(false);
+        setQueryString('');
       });
   };
   return (
