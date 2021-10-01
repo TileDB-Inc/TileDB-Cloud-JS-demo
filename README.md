@@ -27,11 +27,15 @@ The namespace/name of the array should be set in the `.env` file
 REACT_APP_QUICKSTART_ARRAY=my_namespace/my_array
 ```
 
-*Limitations:* Right now the visualization is limited to work only with 4*4 arrays it is adviced to use either [quickstart_dense](https://github.com/TileDB-Inc/TileDB/blob/dev/examples/cpp_api/quickstart_dense.cc) or [quickstart_sparse](https://github.com/TileDB-Inc/TileDB/blob/dev/examples/cpp_api/quickstart_sparse.cc) arrays.
+*Limitations:* Right now the visualization is limited to work only with 4*4 arrays it is adviced to use either [quickstart_dense](https://github.com/TileDB-Inc/TileDB/blob/dev/examples/cpp_api/quickstart_dense.cc) or [quickstart_sparse](https://github.com/TileDB-Inc/TileDB/blob/dev/examples/cpp_api/quickstart_sparse.cc) example arrays.
 
 <img src="https://user-images.githubusercontent.com/33217757/135656093-5ee51fb2-5e29-43ef-a540-1f90d94016aa.png" /> 
 
-### Running the demo `npm start`
+### Running the demo
+
+Start the demo with:
+
+`npm start`
 
 Runs the app in the development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
