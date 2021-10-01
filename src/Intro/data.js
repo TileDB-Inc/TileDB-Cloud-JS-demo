@@ -15,11 +15,14 @@ const query = {
     bufferSize: 15000000000000,
 };
 
-tileDBQuery.ReadQuery("my_namespace", "my_array", query)
-  .then((result) => {
-    // returns an object with keys the name of the attributes and values the result
-      console.log(result);
-  })
+const generator = tileDBQuery.ReadQuery("namespace", "arrayName", query);
+// Get the first value (and the only value, if the query is complete)
+(async function() {
+  const { value, done } = await generator.next();
+  console.log(value);
+  console.log(done); // true
+})()
+
 `
 
 export const multi_range = `
@@ -39,11 +42,12 @@ const query = {
     bufferSize: 15000000000000,
 };
 
-tileDBQuery.ReadQuery("my_namespace", "my_array", query)
-  .then((result) => {
-    // returns an object with keys the name of the attributes and values the result
-      console.log(result);
-  })
+// Iterate over all results in case of an incomplete query
+(async function() {
+    for await (let results of tileDBQuery.ReadQuery("namespace", "arrayName", query)) {
+        console.log(results);
+    }
+})()
 
   `
 
@@ -63,14 +67,22 @@ const dimension2 = [];
 const query = {
     layout: Layout.RowMajor,
     ranges: [dimension1, dimension2],
-    bufferSize: 15000000000000,
+    bufferSize: 15000,
 };
 
-tileDBQuery.ReadQuery("my_namespace", "my_array", query)
-  .then((result) => {
-    // returns an object with keys the name of the attributes and values the result
-      console.log(result);
-  })
+// Manually iterate over all results
+const generator = tileDBQuery.ReadQuery("namespace", "arrayName", query);
+(async function() {
+    const { value, done } = await generator.next();
+    console.log(value);
+    console.log(done); // false
+
+    if (!done) {
+      const { value, done } = await generator.next();
+      console.log(value);
+      console.log(done); // true
+    }
+})()
 
 `
 

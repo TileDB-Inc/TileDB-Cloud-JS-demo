@@ -2,11 +2,19 @@
 
 Demo project to showcase TileDB queries from the browser with the power of [@tiledb-inc/tiledb-cloud](https://github.com/TileDB-Inc/TileDB-Cloud-JS).
 
-## Installation
+### Installation
 
 Run `npm install` to install the dependencies needed for this demo. To install [@tiledb-inc/tiledb-cloud](https://www.npmjs.com/package/@tiledb-inc/tiledb-cloud) in another project, run:
 
 `npm i @tiledb-inc/tiledb-cloud@beta`
+
+### Setup
+
+Please create a `.env` file in the root folder with the following variables:
+
+```
+REACT_APP_API_KEY_PROD=MY_TILEDB_API_KEY
+```
 
 ### Running the demo `npm start`
 

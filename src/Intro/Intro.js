@@ -12,7 +12,7 @@ const Intro = () => {
       <Title>Introduction</Title>
       <Paragraph>TileDB-Cloud-JS supports TileDB queries, by serializing data to capnproto.</Paragraph>
       <Title level={3}>Basic read query</Title>
-      <Paragraph>Dimensions should always be an array of 2 (start of the range and the end of the range). bufferSize dictates the server the number of bytes that should allocated to make this query.</Paragraph>
+      <Paragraph>Dimensions should always be an array of 2 (start of the range and the end of the range). <b>bufferSize</b> dictates the server the number of bytes that should allocated to make this query. In case the bufferSize is not enough, it will result to an incomplete query. For this reason ReadQuery is an async generator so a user could get results in batches.</Paragraph>
       <SyntaxHighlighter language="javascript" style={materialOceanic}>
         {basic}
       </SyntaxHighlighter>
