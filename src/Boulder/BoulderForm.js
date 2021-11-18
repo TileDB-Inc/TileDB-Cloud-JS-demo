@@ -1,5 +1,5 @@
 import React from "react";
-import { Form, InputNumber, Button, Table, Typography } from "antd";
+import { Form, InputNumber, Button, Table, Typography, Slider } from "antd";
 import { TileDBQuery } from "@tiledb-inc/tiledb-cloud";
 import LidarVis from "../components/LidarVis";
 
@@ -95,11 +95,8 @@ const BoulderForm = () => {
   const [form] = Form.useForm();
   const onFinish = async (values) => {
     setResults([]);
-    const ranges = [
-      [values.X_start, values.X_end].filter(Boolean),
-      [values.Y_start, values.Y_end].filter(Boolean),
-      [values.Z_start, values.Z_end].filter(Boolean),
-    ];
+    console.log(values);
+    const ranges = [values.X, values.Y || [], values.Z || []];
 
     const query = {
       layout: "row-major",
@@ -107,7 +104,6 @@ const BoulderForm = () => {
       bufferSize: values.bufferSize,
     };
     setLoading(true);
-
 
     for await (let results of tiledbQuery.ReadQuery(
       "TileDB-Inc",
@@ -154,51 +150,56 @@ const BoulderForm = () => {
 
   return (
     <>
-    {!!results.length && <LidarVis data={results} />}
+      {!!results.length && <LidarVis data={results} />}
       <Form
         form={form}
         name="basic"
+        layout="vertical"
         labelCol={{ span: 3 }}
         wrapperCol={{ span: 24 }}
         style={{ marginTop: "32px" }}
         initialValues={{
-          X_start: 475425,
-          X_end: 475450,
+          X: [475425, 475450],
           bufferSize: 2000000,
         }}
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
         autoComplete="off"
       >
-        <Form.Item label="Buffer size" name="bufferSize">
-          <InputNumber />
+        <Form.Item
+          tooltip="Buffer size allocated to the server for the query"
+          label="Buffer size"
+          name="bufferSize"
+        >
+          <InputNumber style={{ width: "100%" }} />
         </Form.Item>
-        <Form.Item label="X Start" name="X_start">
-          <InputNumber />
-        </Form.Item>
-
-        <Form.Item label="X End" name="X_end">
-          <InputNumber />
-        </Form.Item>
-
-        <Form.Item label="Y Start" name="Y_start">
-          <InputNumber />
+        <Form.Item label="X" name="X">
+          <Slider range min={400000} max={800000} />
         </Form.Item>
 
-        <Form.Item label="Y End" name="Y_end">
-          <InputNumber />
+        <Form.Item
+          label="Y"
+          tooltip="Will select whole dimension if not set"
+          name="Y"
+        >
+          <Slider range min={0} max={1000000} />
         </Form.Item>
 
-        <Form.Item label="Z Start" name="Z_start">
-          <InputNumber />
+        <Form.Item
+          label="Z"
+          tooltip="Will select whole dimension if not set"
+          name="Z"
+        >
+          <Slider range min={0} max={1000000} />
         </Form.Item>
 
-        <Form.Item label="Z End" name="Z_end">
-          <InputNumber />
-        </Form.Item>
-
-        <Form.Item wrapperCol={{ offset: 3, span: 16 }}>
-          <Button style={{marginRight: '15px'}} type="primary" htmlType="submit" loading={loading}>
+        <Form.Item wrapperCol={{ offset: 0, span: 16 }}>
+          <Button
+            style={{ marginRight: "15px" }}
+            type="primary"
+            htmlType="submit"
+            loading={loading}
+          >
             Submit
           </Button>
           <Button htmlType="button" onClick={onReset}>
@@ -206,8 +207,16 @@ const BoulderForm = () => {
           </Button>
         </Form.Item>
       </Form>
-      {!!results.length && <Typography.Title level={5}>Showing {results.length} results</Typography.Title>}
-      <Table scroll={{ x: 140 }} dataSource={results.slice(0, 500)} columns={columns} />
+      {!!results.length && (
+        <Typography.Title level={5}>
+          Showing {results.length} results
+        </Typography.Title>
+      )}
+      <Table
+        scroll={{ x: 140 }}
+        dataSource={results.slice(0, 500)}
+        columns={columns}
+      />
     </>
   );
 };

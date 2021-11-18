@@ -29,7 +29,7 @@ const GtexForm = () => {
   const [form] = Form.useForm();
   const onFinish = (values) => {
     const ranges = [
-      [values.gene_id_start, values.gene_id_end].filter(Boolean),
+      [values.gene_id, values.gene_id].filter(Boolean),
       [values.sample_start, values.sample_end].filter(Boolean),
     ];
 
@@ -78,22 +78,18 @@ const GtexForm = () => {
       <Form
         form={form}
         name="basic"
+        layout="vertical"
         labelCol={{ span: 3 }}
         wrapperCol={{ span: 24 }}
         style={{ marginTop: "32px" }}
         initialValues={{
-          gene_id_start: "ENSG00000202059.1",
-          gene_id_end: "ENSG00000202059.1",
+          gene_id: "ENSG00000202059.1",
         }}
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
         autoComplete="off"
       >
-        <Form.Item label="gene_id Start" name="gene_id_start">
-          <Input />
-        </Form.Item>
-
-        <Form.Item label="gene_id End" name="gene_id_end">
+        <Form.Item label="gene_id" name="gene_id">
           <Input />
         </Form.Item>
 
@@ -105,7 +101,7 @@ const GtexForm = () => {
           <Input />
         </Form.Item>
 
-        <Form.Item wrapperCol={{ offset: 3, span: 16 }}>
+        <Form.Item wrapperCol={{ offset: 0, span: 16 }}>
           <Button
             style={{ marginRight: "15px" }}
             type="primary"
