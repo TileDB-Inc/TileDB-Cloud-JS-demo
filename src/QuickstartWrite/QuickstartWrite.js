@@ -9,10 +9,9 @@ import {
   InputNumber,
   Spin,
 } from "antd";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { materialOceanic } from "react-syntax-highlighter/dist/esm/styles/prism";
 import Cube from "../components/Cube";
 import { TileDBQuery, v1 } from "@tiledb-inc/tiledb-cloud";
+import CodeSnippet from "../components/CodeSnippet/CodeSnippet";
 
 const { Title, Paragraph } = Typography;
 
@@ -106,11 +105,7 @@ const QuickstartWrite = () => {
 
   React.useEffect(() => {
     if (queryString) {
-      message.info(
-        <SyntaxHighlighter language="javascript" style={materialOceanic}>
-          {queryString}
-        </SyntaxHighlighter>
-      );
+      message.info(<CodeSnippet>{queryString}</CodeSnippet>);
     }
   }, [queryString]);
 
@@ -193,9 +188,7 @@ const QuickstartWrite = () => {
     <div>
       <Title>Sparse array write</Title>
       <Title level={4}>Example code</Title>
-      <SyntaxHighlighter language="javascript" style={materialOceanic}>
-        {markdown}
-      </SyntaxHighlighter>
+      <CodeSnippet>{markdown}</CodeSnippet>
       <Divider />
       <Paragraph>
         Press the "Get array data" button to see your array as an interactive

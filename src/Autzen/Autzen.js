@@ -1,9 +1,7 @@
 import * as React from "react";
 import { Typography, Divider } from "antd";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { materialOceanic } from "react-syntax-highlighter/dist/esm/styles/prism";
 import AutzenForm from "./AutzenForm";
-
+import CodeSnippet from "../components/CodeSnippet/CodeSnippet";
 
 const { Title } = Typography;
 
@@ -40,9 +38,7 @@ const Autzen = () => {
         <Title>Lidar</Title>
         <Title level={4}>Example code</Title>
       </Typography>
-      <SyntaxHighlighter language="javascript" style={materialOceanic}>
-        {markdown}
-      </SyntaxHighlighter>
+      <CodeSnippet>{markdown}</CodeSnippet>
       <Divider />
       <AutzenForm />
     </>
