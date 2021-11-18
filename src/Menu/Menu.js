@@ -1,35 +1,34 @@
 import React from "react";
 import { Menu } from "antd";
+import { Link, useLocation } from "react-router-dom";
+import routePaths from "../constants/routePaths/routePaths";
 
-const MenuComponent = ({ onClick }) => {
+const MenuComponent = () => {
+  let location = useLocation();
+  const selectedItem = Object.values(routePaths).findIndex(
+    (p) => p === location.pathname
+  );
+
   return (
-    <Menu mode="inline" style={{ width: 256 }}>
-      <Menu.Item onClick={() => onClick("intro")} key="1">
-        Introduction
+    <Menu
+      mode="inline"
+      style={{ width: 256 }}
+      defaultSelectedKeys={[String(selectedItem)]}
+    >
+      <Menu.Item key="0">
+        <Link to={routePaths.root}>Introduction</Link>
       </Menu.Item>
-      <Menu.Item
-        onClick={() => onClick("gtex")}
-        key="2"
-      >
-        Gtex
+      <Menu.Item key="1">
+        <Link to={routePaths.gtex}>Gtex</Link>
       </Menu.Item>
-      <Menu.Item
-        onClick={() => onClick("lidar")}
-        key="3"
-      >
-        Lidar
+      <Menu.Item key="2">
+        <Link to={routePaths.lidar}>Lidar</Link>
       </Menu.Item>
-      <Menu.Item
-        onClick={() => onClick("boulder")}
-        key="4"
-      >
-        Boulder
+      <Menu.Item key="3">
+        <Link to={routePaths.boulder}>Boulder</Link>
       </Menu.Item>
-      <Menu.Item
-        onClick={() => onClick("writeInteractive")}
-        key="5"
-      >
-        Writes (interactive example)
+      <Menu.Item key="4">
+        <Link to={routePaths.writes}>Writes</Link>
       </Menu.Item>
     </Menu>
   );

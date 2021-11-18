@@ -7,33 +7,23 @@ import Gtex from "./Gtex";
 import Header from "./Header";
 import Intro from "./Intro";
 import Menu from "./Menu";
-
-const pages = {
-  intro: "intro",
-  gtex: "gtex",
-  lidar: "lidar",
-  boulder: "boulder",
-  writeInteractive: "writeInteractive",
-};
+import { Routes, Route } from "react-router-dom";
+import routePaths from "./constants/routePaths/routePaths";
 
 function App() {
-  const [page, setPage] = React.useState(pages.intro);
-
   return (
     <div>
       <Header />
       <div className="App">
-        <Menu onClick={setPage} />
+        <Menu />
         <main className="App__main">
-          {page === pages.intro && <Intro />}
-
-          {page === pages.gtex && <Gtex />}
-
-          {page === pages.lidar && <Autzen />}
-
-          {page === pages.boulder && <Boulder />}
-
-          {page === pages.writeInteractive && <QuickstartWrite />}
+          <Routes>
+            <Route exact path={routePaths.root} element={<Intro />} />
+            <Route path={routePaths.gtex} element={<Gtex />} />
+            <Route path={routePaths.lidar} element={<Autzen />} />
+            <Route path={routePaths.boulder} element={<Boulder />} />
+            <Route path={routePaths.writes} element={<QuickstartWrite />} />
+          </Routes>
         </main>
       </div>
     </div>

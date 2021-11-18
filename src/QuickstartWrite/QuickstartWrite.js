@@ -18,7 +18,7 @@ const { Title, Paragraph } = Typography;
 
 const config = {
   apiKey: process.env.REACT_APP_API_KEY_PROD,
-}
+};
 
 const QueryHelper = new TileDBQuery(config);
 const arrayAPI = new v1.ArrayApi(config);
@@ -54,7 +54,6 @@ tiledbQueries.WriteQuery("TileDB", "quickstart_sparse_array", query)
 });
 `;
 
-
 const createWriteQuery = (query, namespace, name) => `
 const { TileDBQuery } = require("@tiledb-inc/tiledb-cloud");
 const tiledbQueries = new TileDBQuery({
@@ -67,7 +66,7 @@ tiledbQueries.WriteQuery(${namespace}, ${name}, query)
 .then((res) => {
   console.log(res)
 });
-`
+`;
 
 const QuickstartWrite = () => {
   const [data, setData] = React.useState({});
@@ -81,8 +80,8 @@ const QuickstartWrite = () => {
   });
   const [dimensions, setDimensions] = React.useState([]);
   const [attributes, setAttributes] = React.useState([]);
-  const [queryString, setQueryString] = React.useState('');
-  const quickStartArray = process.env.REACT_APP_QUICKSTART_ARRAY || '';
+  const [queryString, setQueryString] = React.useState("");
+  const quickStartArray = process.env.REACT_APP_QUICKSTART_ARRAY || "";
   const [namespace, arrayName] = quickStartArray.split("/");
 
   React.useEffect(() => {
@@ -92,25 +91,28 @@ const QuickstartWrite = () => {
       );
     } else {
       // Get arraySchema
-      arrayAPI.getArray(namespace, arrayName, 'application/json').then((res) => {
-        const dimensionNames = res.data.domain.dimensions.map((dim) => dim.name);
-        const attributeNames = res.data.attributes.map((attr) => attr.name);
-        setDimensions(dimensionNames);
-        setAttributes(attributeNames);
-      })
+      arrayAPI
+        .getArray(namespace, arrayName, "application/json")
+        .then((res) => {
+          const dimensionNames = res.data.domain.dimensions.map(
+            (dim) => dim.name
+          );
+          const attributeNames = res.data.attributes.map((attr) => attr.name);
+          setDimensions(dimensionNames);
+          setAttributes(attributeNames);
+        });
     }
   }, [quickStartArray, arrayName, namespace]);
-
 
   React.useEffect(() => {
     if (queryString) {
       message.info(
         <SyntaxHighlighter language="javascript" style={materialOceanic}>
-        {queryString}
-      </SyntaxHighlighter>
-      )
+          {queryString}
+        </SyntaxHighlighter>
+      );
     }
-  }, [queryString])
+  }, [queryString]);
 
   const showModal = (x, y, cellData) => {
     setSelectedCellData({ x, y, cellData });
@@ -169,7 +171,9 @@ const QuickstartWrite = () => {
       query.values[key].values = [val];
     });
 
-    setQueryString(createWriteQuery(JSON.stringify(query), namespace, arrayName));
+    setQueryString(
+      createWriteQuery(JSON.stringify(query), namespace, arrayName)
+    );
 
     setWriteLoading(true);
     QueryHelper.WriteQuery(namespace, arrayName, query)
@@ -182,7 +186,7 @@ const QuickstartWrite = () => {
       })
       .finally(() => {
         setWriteLoading(false);
-        setQueryString('');
+        setQueryString("");
       });
   };
   return (
@@ -193,7 +197,13 @@ const QuickstartWrite = () => {
         {markdown}
       </SyntaxHighlighter>
       <Divider />
-      <Paragraph>Press the "Get array data" button to see your array as an interactive cube.<br/>You can edit any of the cells by clicking on them and assigning a new value.</Paragraph>
+      <Paragraph>
+        Press the "Get array data" button to see your array as an interactive
+        cube.
+        <br />
+        You can edit any of the cells by clicking on them and assigning a new
+        value.
+      </Paragraph>
       <Button
         style={{ marginBottom: "20px" }}
         onClick={getArray}
@@ -237,7 +247,7 @@ const QuickstartWrite = () => {
           key={`${SelectedCellData.x}+${SelectedCellData.y}`}
         >
           {attributes.map((attr) => (
-            <Form.Item label={`Attribute ${attr}`} name={attr}>
+            <Form.Item key={attr} label={`Attribute ${attr}`} name={attr}>
               <InputNumber style={{ width: 200 }} />
             </Form.Item>
           ))}
