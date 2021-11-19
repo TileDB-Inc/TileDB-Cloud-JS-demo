@@ -61,3 +61,31 @@ h1.ant-typography, h2.ant-typography, h3.ant-typography, h4.ant-typography, h5.a
 .ant-btn-primary {
   background-color: #0077FF;
 }
+
+.Form-wrapper {
+  display: flex;
+  margin-top: 32px;
+  max-height: 440px;
+}
+
+.Form-wrapper .ant-form {
+  width: 50%;
+  margin-right: 40px;
+}
+
+.timeline-list {
+  flex: 1;
+  overflow-y: scroll;
+  padding-top: 5px;
+  padding-left: 5px;
+}
+
+
+.timeline-list::-webkit-scrollbar {
+  width: 10px;
+  background-color: #f8f8f8;
+}
+.timeline-list::-webkit-scrollbar-thumb {
+  border-radius: 12px;
+  background-color: #eee;
+}

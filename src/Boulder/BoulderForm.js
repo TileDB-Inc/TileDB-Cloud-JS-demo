@@ -2,6 +2,7 @@ import React from "react";
 import { Form, InputNumber, Button, Table, Typography, Slider } from "antd";
 import { TileDBQuery } from "@tiledb-inc/tiledb-cloud";
 import LidarVis from "../components/LidarVis";
+import Timeline from "../components/Timeline/Timeline";
 
 const tiledbQuery = new TileDBQuery({
   apiKey: process.env.REACT_APP_API_KEY_PROD,
@@ -92,11 +93,13 @@ const columns = [
 const BoulderForm = () => {
   const [results, setResults] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
+  const [timelineItems, setTimelineItems] = React.useState([]);
   const stop = React.useRef(false);
   const [form] = Form.useForm();
   const onFinish = async (values) => {
     stop.current = false;
     setResults([]);
+    setTimelineItems([]);
     console.log(values);
     const ranges = [values.X, values.Y || [], values.Z || []];
 
@@ -113,6 +116,12 @@ const BoulderForm = () => {
       query
     )) {
       if (stop.current) {
+        setTimelineItems((items) => {
+          return items.concat({
+            type: "stopping",
+            text: `Stopped`,
+          });
+        });
         break;
       }
       // In case the results are null
@@ -138,10 +147,22 @@ const BoulderForm = () => {
         Z: results.Z[i],
         key: i,
       }));
-      console.log(result);
       setResults((res) => res.concat(result));
+      setTimelineItems((items) => {
+        return items.concat({
+          type: "success",
+          text: `Fetched ${result.length} results`,
+        });
+      });
     }
-
+    if (!stop.current) {
+      setTimelineItems((items) => {
+        return items.concat({
+          type: "completed",
+          text: `Finished`,
+        });
+      });
+    }
     setLoading(false);
   };
 
@@ -151,6 +172,7 @@ const BoulderForm = () => {
 
   const onReset = () => {
     form.resetFields();
+    setTimelineItems([]);
   };
 
   const onStop = () => {
@@ -160,73 +182,75 @@ const BoulderForm = () => {
   return (
     <>
       {!!results.length && <LidarVis data={results} />}
-      <Form
-        form={form}
-        name="basic"
-        layout="vertical"
-        labelCol={{ span: 3 }}
-        wrapperCol={{ span: 24 }}
-        style={{ marginTop: "32px" }}
-        initialValues={{
-          X: [475425, 475450],
-          bufferSize: 2000000,
-        }}
-        onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
-        autoComplete="off"
-      >
-        <Form.Item
-          tooltip="Buffer size allocated to the server for the query"
-          label="Buffer size"
-          name="bufferSize"
+      <div className="Form-wrapper">
+        <Form
+          form={form}
+          name="basic"
+          layout="vertical"
+          labelCol={{ span: 24 }}
+          wrapperCol={{ span: 24 }}
+          initialValues={{
+            X: [475425, 475450],
+            bufferSize: 2000000,
+          }}
+          onFinish={onFinish}
+          onFinishFailed={onFinishFailed}
+          autoComplete="off"
         >
-          <InputNumber style={{ width: "100%" }} />
-        </Form.Item>
-        <Form.Item label="X" name="X">
-          <Slider range min={400000} max={800000} />
-        </Form.Item>
-
-        <Form.Item
-          label="Y"
-          tooltip="Will select whole dimension if not set"
-          name="Y"
-        >
-          <Slider range min={0} max={1000000} />
-        </Form.Item>
-
-        <Form.Item
-          label="Z"
-          tooltip="Will select whole dimension if not set"
-          name="Z"
-        >
-          <Slider range min={0} max={1000000} />
-        </Form.Item>
-
-        <Form.Item wrapperCol={{ offset: 0, span: 16 }}>
-          <Button
-            style={{ marginRight: "15px" }}
-            type="primary"
-            htmlType="submit"
-            loading={loading}
-            size="large"
+          <Form.Item
+            tooltip="Buffer size allocated to the server for the query"
+            label="Buffer size"
+            name="bufferSize"
           >
-            Submit
-          </Button>
-          <Button
-            style={{ marginRight: "15px" }}
-            htmlType="button"
-            size="large"
-            onClick={onReset}
+            <InputNumber style={{ width: "100%" }} />
+          </Form.Item>
+          <Form.Item label="X" name="X">
+            <Slider range min={400000} max={800000} />
+          </Form.Item>
+
+          <Form.Item
+            label="Y"
+            tooltip="Will select whole dimension if not set"
+            name="Y"
           >
-            Reset
-          </Button>
-          {loading && (
-            <Button htmlType="button" size="large" danger onClick={onStop}>
-              Stop
+            <Slider range min={0} max={1000000} />
+          </Form.Item>
+
+          <Form.Item
+            label="Z"
+            tooltip="Will select whole dimension if not set"
+            name="Z"
+          >
+            <Slider range min={0} max={1000000} />
+          </Form.Item>
+
+          <Form.Item wrapperCol={{ offset: 0, span: 24 }}>
+            <Button
+              style={{ marginRight: "15px" }}
+              type="primary"
+              htmlType="submit"
+              loading={loading}
+              size="large"
+            >
+              Submit
             </Button>
-          )}
-        </Form.Item>
-      </Form>
+            <Button
+              style={{ marginRight: "15px" }}
+              htmlType="button"
+              size="large"
+              onClick={onReset}
+            >
+              Reset
+            </Button>
+            {loading && (
+              <Button htmlType="button" size="large" danger onClick={onStop}>
+                Stop
+              </Button>
+            )}
+          </Form.Item>
+        </Form>
+        <Timeline loading={loading} items={timelineItems} />
+      </div>
       {!!results.length && (
         <Typography.Title level={5}>
           Showing {results.length} results

@@ -23,9 +23,9 @@ function minMaxArray(arr, idx) {
 
 const LidarVis = ({ data }) => {
   const [canvas, setCanvas] = React.useState(null);
-  const {max: maxX, min: minX} = minMaxArray(data, 'X');
-  const {max: maxY, min: minY} = minMaxArray(data, 'Y');
-  const {max: maxZ, min: minZ} = minMaxArray(data, 'Z');
+  const { max: maxX, min: minX } = minMaxArray(data, "X");
+  const { max: maxY, min: minY } = minMaxArray(data, "Y");
+  const { max: maxZ, min: minZ } = minMaxArray(data, "Z");
   const num_coords = data.length;
 
   const onSceneReady = (scene) => {
@@ -58,7 +58,7 @@ const LidarVis = ({ data }) => {
   };
 
   return (
-    <div>
+    <div className="lidar-visualization">
       <SceneComponent
         antialias
         onSceneReady={onSceneReady}
