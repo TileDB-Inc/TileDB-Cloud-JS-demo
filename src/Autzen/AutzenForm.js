@@ -93,9 +93,11 @@ const columns = [
 const AutzenForm = () => {
   const [results, setResults] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
+  const stop = React.useRef(false);
   const [form] = Form.useForm();
   const onFinish = async (values) => {
     // Reset results
+    stop.current = false;
     setResults([]);
     const ranges = [values.X, values.Y, values.Z];
 
@@ -111,6 +113,9 @@ const AutzenForm = () => {
       "autzen_tiledb",
       query
     )) {
+      if (stop.current) {
+        break;
+      }
       // In case the results are null
       if (!Array.isArray(results.Blue)) {
         continue;
@@ -147,6 +152,10 @@ const AutzenForm = () => {
 
   const onReset = () => {
     form.resetFields();
+  };
+
+  const onStop = () => {
+    stop.current = true;
   };
 
   return (
@@ -195,9 +204,19 @@ const AutzenForm = () => {
           >
             Submit
           </Button>
-          <Button htmlType="button" size="large" onClick={onReset}>
+          <Button
+            htmlType="button"
+            size="large"
+            onClick={onReset}
+            style={{ marginRight: "15px" }}
+          >
             Reset
           </Button>
+          {loading && (
+            <Button htmlType="button" size="large" danger onClick={onStop}>
+              Stop
+            </Button>
+          )}
         </Form.Item>
       </Form>
       {!!results.length && (

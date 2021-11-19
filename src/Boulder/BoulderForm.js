@@ -92,8 +92,10 @@ const columns = [
 const BoulderForm = () => {
   const [results, setResults] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
+  const stop = React.useRef(false);
   const [form] = Form.useForm();
   const onFinish = async (values) => {
+    stop.current = false;
     setResults([]);
     console.log(values);
     const ranges = [values.X, values.Y || [], values.Z || []];
@@ -110,6 +112,9 @@ const BoulderForm = () => {
       "boulder",
       query
     )) {
+      if (stop.current) {
+        break;
+      }
       // In case the results are null
       if (!Array.isArray(results.Blue)) {
         continue;
@@ -146,6 +151,10 @@ const BoulderForm = () => {
 
   const onReset = () => {
     form.resetFields();
+  };
+
+  const onStop = () => {
+    stop.current = true;
   };
 
   return (
@@ -203,9 +212,19 @@ const BoulderForm = () => {
           >
             Submit
           </Button>
-          <Button htmlType="button" size="large" onClick={onReset}>
+          <Button
+            style={{ marginRight: "15px" }}
+            htmlType="button"
+            size="large"
+            onClick={onReset}
+          >
             Reset
           </Button>
+          {loading && (
+            <Button htmlType="button" size="large" danger onClick={onStop}>
+              Stop
+            </Button>
+          )}
         </Form.Item>
       </Form>
       {!!results.length && (
