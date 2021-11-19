@@ -1,10 +1,16 @@
 .Cell {
     border: 1px solid #222;
-    height: 100px;
+    height: 128px;
     flex-basis: 25%;
     transition: background-color 0.3s ease-in-out;
     color: #fff;
-    padding: 5px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background-image: url('../../assets/pencil.svg');
+    background-repeat: no-repeat;
+    background-position: 90% 10%;
 }
 
 .Cell:hover {
@@ -13,18 +19,43 @@
 }
 
 .Cell.active {
-    background-color: rgba(77, 159, 255, 1);
+    background-color: rgba(44, 67, 150, 1);
 }
 
-.Cell span {
+.Cell__attribute {
+    font-size: 18px;
+    color: #A8BBFF;
+}
+
+.Cell__attribute b {
     color: #fff;
-    display: block;
+}
+
+.Cell__dimensions-wrapper {
+    background-color: rgba(255, 255, 255, 0.08);
+    border-radius: 2px;
+    display: inline-flex;
+    padding: 4px 12px;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.Cell .Cell__dimension {
+    color: #A8BBFF;
+    font-size: 15px;
+}
+
+.Cell .Cell__dimension b {
+    color: #fff;
 }
 
 .Cube {
     box-shadow: 0 0 30px rgb(0 0 0 / 30%);
+    border-radius: 12px;
     display: flex;
     flex-wrap: wrap;
-    margin: 0 auto;
-    width: 400px;
+    width: 512px;
+    overflow: hidden;
 }
+
+
