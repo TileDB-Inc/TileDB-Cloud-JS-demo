@@ -47,3 +47,17 @@
     transform: rotate(360deg);
   }
 }
+
+
+h1.ant-typography, h2.ant-typography, h3.ant-typography, h4.ant-typography, h5.ant-typography {
+  font-family: 'Inter', sans-serif !important;
+}
+
+.ant-btn {
+  border-radius: 6px;
+  font-weight: bold;
+}
+
+.ant-btn-primary {
+  background-color: #0077FF;
+}

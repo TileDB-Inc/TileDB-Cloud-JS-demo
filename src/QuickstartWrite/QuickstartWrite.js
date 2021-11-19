@@ -137,7 +137,6 @@ const QuickstartWrite = () => {
     generator
       .next()
       .then(({ value }) => {
-        console.log(value);
         setData(value);
       })
       .catch((e) => {
@@ -201,6 +200,7 @@ const QuickstartWrite = () => {
         style={{ marginBottom: "20px" }}
         onClick={getArray}
         loading={loading}
+        size="large"
       >
         Get array data
       </Button>
@@ -220,6 +220,7 @@ const QuickstartWrite = () => {
             form="cell-form"
             key="submit"
             htmlType="submit"
+            size="large"
             loading={writeloading}
           >
             Submit

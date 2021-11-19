@@ -199,10 +199,11 @@ const BoulderForm = () => {
             type="primary"
             htmlType="submit"
             loading={loading}
+            size="large"
           >
             Submit
           </Button>
-          <Button htmlType="button" onClick={onReset}>
+          <Button htmlType="button" size="large" onClick={onReset}>
             Reset
           </Button>
         </Form.Item>
