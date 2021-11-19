@@ -12,6 +12,7 @@ import {
 import Cube from "../components/Cube";
 import { TileDBQuery, v1 } from "@tiledb-inc/tiledb-cloud";
 import CodeSnippet from "../components/CodeSnippet/CodeSnippet";
+import { PlayCircleFilled } from "@ant-design/icons";
 
 const { Title, Paragraph } = Typography;
 
@@ -190,7 +191,7 @@ const QuickstartWrite = () => {
       <CodeSnippet>{markdown}</CodeSnippet>
       <Divider />
       <Paragraph>
-        Press the "Get array data" button to see your array as an interactive
+        Press the "Preview array" button to see your array as an interactive
         cube.
         <br />
         You can edit any of the cells by clicking on them and assigning a new
@@ -201,8 +202,9 @@ const QuickstartWrite = () => {
         onClick={getArray}
         loading={loading}
         size="large"
+        icon={<PlayCircleFilled />}
       >
-        Get array data
+        Preview array
       </Button>
       {!!Object.keys(data).length && (
         <Spin spinning={loading} tip="Loading...">
