@@ -4,6 +4,7 @@ const routePaths = {
   lidar: "/lidar",
   boulder: "/boulder",
   writes: "/writes",
+  files: "/files",
 };
 
 export default routePaths;

@@ -6,6 +6,7 @@ import QuickstartWrite from "./pages/QuickstartWrite";
 import Gtex from "./pages/Gtex";
 import Header from "./components/Header";
 import Intro from "./pages/Intro";
+import Files from "./pages/Files";
 import Menu from "./components/Menu";
 import { Routes, Route } from "react-router-dom";
 import routePaths from "./constants/routePaths/routePaths";
@@ -23,6 +24,7 @@ function App() {
             <Route path={routePaths.lidar} element={<Autzen />} />
             <Route path={routePaths.boulder} element={<Boulder />} />
             <Route path={routePaths.writes} element={<QuickstartWrite />} />
+            <Route path={routePaths.files} element={<Files />} />
           </Routes>
         </main>
       </div>

@@ -30,6 +30,9 @@ const MenuComponent = () => {
       <Menu.Item key="4">
         <Link to={routePaths.writes}>Writes</Link>
       </Menu.Item>
+      <Menu.Item key="5">
+        <Link to={routePaths.files}>Files</Link>
+      </Menu.Item>
     </Menu>
   );
 };
