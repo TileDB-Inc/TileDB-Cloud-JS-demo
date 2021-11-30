@@ -1,6 +1,6 @@
 import { Divider, Typography, Tabs } from "antd";
 import React from "react";
-import CodeSnippet from "../components/CodeSnippet/CodeSnippet";
+import CodeSnippet from "../../components/CodeSnippet/CodeSnippet";
 import {
   basic,
   basic_write,

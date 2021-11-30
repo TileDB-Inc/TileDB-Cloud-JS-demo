@@ -1,12 +1,12 @@
 import React from "react";
 import "./App.css";
-import Autzen from "./Autzen";
-import Boulder from "./Boulder";
-import QuickstartWrite from "./QuickstartWrite";
-import Gtex from "./Gtex";
-import Header from "./Header";
-import Intro from "./Intro";
-import Menu from "./Menu";
+import Autzen from "./pages/Autzen";
+import Boulder from "./pages/Boulder";
+import QuickstartWrite from "./pages/QuickstartWrite";
+import Gtex from "./pages/Gtex";
+import Header from "./components/Header";
+import Intro from "./pages/Intro";
+import Menu from "./components/Menu";
 import { Routes, Route } from "react-router-dom";
 import routePaths from "./constants/routePaths/routePaths";
 

@@ -1,8 +1,8 @@
 import React from "react";
 import { Form, InputNumber, Button, Table, Typography, Slider } from "antd";
 import { TileDBQuery } from "@tiledb-inc/tiledb-cloud";
-import LidarVis from "../components/LidarVis";
-import Timeline from "../components/Timeline/Timeline";
+import LidarVis from "../../components/LidarVis";
+import Timeline from "../../components/Timeline/Timeline";
 
 const tiledbQuery = new TileDBQuery({
   apiKey: process.env.REACT_APP_API_KEY_PROD,
@@ -90,19 +90,18 @@ const columns = [
     key: "UserData",
   },
 ];
-
-const AutzenForm = () => {
+const BoulderForm = () => {
   const [results, setResults] = React.useState([]);
-  const [timelineItems, setTimelineItems] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
+  const [timelineItems, setTimelineItems] = React.useState([]);
   const stop = React.useRef(false);
   const [form] = Form.useForm();
   const onFinish = async (values) => {
-    // Reset results
     stop.current = false;
-    setTimelineItems([]);
     setResults([]);
-    const ranges = [values.X, values.Y, values.Z];
+    setTimelineItems([]);
+    console.log(values);
+    const ranges = [values.X, values.Y || [], values.Z || []];
 
     const query = {
       layout: "row-major",
@@ -113,7 +112,7 @@ const AutzenForm = () => {
 
     for await (let results of tiledbQuery.ReadQuery(
       "TileDB-Inc",
-      "autzen_tiledb",
+      "boulder",
       query
     )) {
       if (stop.current) {
@@ -173,6 +172,7 @@ const AutzenForm = () => {
 
   const onReset = () => {
     form.resetFields();
+    setTimelineItems([]);
   };
 
   const onStop = () => {
@@ -187,14 +187,11 @@ const AutzenForm = () => {
           form={form}
           name="basic"
           layout="vertical"
-          labelCol={{ span: 14 }}
+          labelCol={{ span: 24 }}
           wrapperCol={{ span: 24 }}
-          style={{ marginTop: "32px" }}
           initialValues={{
-            X: [636800, 637800],
-            Y: [851000, 853000],
-            Z: [406.14, 615.26],
-            bufferSize: 15000000,
+            X: [475425, 475450],
+            bufferSize: 2000000,
           }}
           onFinish={onFinish}
           onFinishFailed={onFinishFailed}
@@ -208,14 +205,25 @@ const AutzenForm = () => {
             <InputNumber style={{ width: "100%" }} />
           </Form.Item>
           <Form.Item label="X" name="X">
-            <Slider range min={500000} max={1000000} />
+            <Slider range min={400000} max={800000} />
           </Form.Item>
-          <Form.Item label="Y" name="Y">
-            <Slider range min={500000} max={1000000} />
+
+          <Form.Item
+            label="Y"
+            tooltip="Will select whole dimension if not set"
+            name="Y"
+          >
+            <Slider range min={0} max={1000000} />
           </Form.Item>
-          <Form.Item label="Z" name="Z">
-            <Slider range min={200} max={800} />
+
+          <Form.Item
+            label="Z"
+            tooltip="Will select whole dimension if not set"
+            name="Z"
+          >
+            <Slider range min={0} max={1000000} />
           </Form.Item>
+
           <Form.Item wrapperCol={{ offset: 0, span: 24 }}>
             <Button
               style={{ marginRight: "15px" }}
@@ -227,10 +235,10 @@ const AutzenForm = () => {
               Submit
             </Button>
             <Button
+              style={{ marginRight: "15px" }}
               htmlType="button"
               size="large"
               onClick={onReset}
-              style={{ marginRight: "15px" }}
             >
               Reset
             </Button>
@@ -257,4 +265,4 @@ const AutzenForm = () => {
   );
 };
 
-export default AutzenForm;
+export default BoulderForm;

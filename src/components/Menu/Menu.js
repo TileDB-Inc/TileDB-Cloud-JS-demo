@@ -1,7 +1,7 @@
 import React from "react";
 import { Menu } from "antd";
 import { Link, useLocation } from "react-router-dom";
-import routePaths from "../constants/routePaths/routePaths";
+import routePaths from "../../constants/routePaths/routePaths";
 
 const MenuComponent = () => {
   let location = useLocation();

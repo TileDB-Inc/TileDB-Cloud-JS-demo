@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Typography, Divider } from "antd";
 import GtexForm from "./GtexForm";
-import CodeSnippet from "../components/CodeSnippet/CodeSnippet";
+import CodeSnippet from "../../components/CodeSnippet/CodeSnippet";
 
 const { Title, Paragraph } = Typography;
 

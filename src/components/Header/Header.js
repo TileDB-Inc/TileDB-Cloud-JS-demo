@@ -1,6 +1,6 @@
 import React from "react";
 import "./Header.css";
-import logo from "../assets/cloud_js_logo.svg";
+import logo from "../../assets/cloud_js_logo.svg";
 
 const Header = () => {
   return (

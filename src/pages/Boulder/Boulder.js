@@ -1,9 +1,9 @@
 import * as React from "react";
 import { Typography, Divider } from "antd";
-import AutzenForm from "./AutzenForm";
-import CodeSnippet from "../components/CodeSnippet/CodeSnippet";
+import BoulderForm from "./BoulderForm";
+import CodeSnippet from "../../components/CodeSnippet/CodeSnippet";
 
-const { Title } = Typography;
+const { Title, Paragraph } = Typography;
 
 const markdown = `
 const { TileDBQuery } = require("@tiledb-inc/tiledb-cloud");
@@ -14,7 +14,7 @@ const tiledbQuery = new TileDBQuery({
 });
 
 const ranges = [
-    [636800,637800], [851000,853000], [406.14,615.26]
+    [475425,475450], [], []
 ]
 
 const query = {
@@ -25,24 +25,32 @@ const query = {
 
 (async function() {
   // Iterate over all results in case query is incomplete
-  for await (let results of tiledbQuery.ReadQuery("TileDB-Inc", "autzen_tiledb", query)) {
+  for await (let results of tiledbQuery.ReadQuery("TileDB-Inc", "boulder", query)) {
       console.log(results);
   }
 })();
+
 `;
 
-const Autzen = () => {
+const Boulder = () => {
   return (
     <>
       <Typography>
-        <Title>Lidar</Title>
+        <Title>Boulder</Title>
         <Title level={4}>Example code</Title>
+        <Paragraph>
+          Point cloud data from{" "}
+          <a href="https://www.pixel8.earth/" rel="noreferrer" target="_blank">
+            https://www.pixel8.earth/
+          </a>{" "}
+          licensed as CC by 2.0
+        </Paragraph>
       </Typography>
       <CodeSnippet>{markdown}</CodeSnippet>
       <Divider />
-      <AutzenForm />
+      <BoulderForm />
     </>
   );
 };
 
-export default Autzen;
+export default Boulder;

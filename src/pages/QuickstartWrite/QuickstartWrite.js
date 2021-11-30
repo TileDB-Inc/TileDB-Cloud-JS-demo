@@ -9,9 +9,9 @@ import {
   InputNumber,
   Spin,
 } from "antd";
-import Cube from "../components/Cube";
+import Cube from "../../components/Cube";
 import { TileDBQuery, v1 } from "@tiledb-inc/tiledb-cloud";
-import CodeSnippet from "../components/CodeSnippet/CodeSnippet";
+import CodeSnippet from "../../components/CodeSnippet/CodeSnippet";
 import { PlayCircleFilled } from "@ant-design/icons";
 
 const { Title, Paragraph } = Typography;
