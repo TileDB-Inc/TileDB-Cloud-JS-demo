@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
 import { Typography } from "antd";
-import { TileDBQuery } from "@tiledb-inc/tiledb-cloud";
-import CodeSnippet from "../../components/CodeSnippet/CodeSnippet";
+import Client from "@tiledb-inc/tiledb-cloud";
+import CodeSnippet from "../../components/CodeSnippet";
 
-const tiledbQuery = new TileDBQuery({
+const tiledbQuery = new Client({
   apiKey: process.env.REACT_APP_API_KEY_PROD,
 });
 
@@ -17,10 +17,10 @@ const query = {
 };
 
 const markdown = `
-const { TileDBQuery } = require("@tiledb-inc/tiledb-cloud");
+import Client from "@tiledb-inc/tiledb-cloud";
 
 
-const tiledbQuery = new TileDBQuery({
+const client = new Client({
     apiKey: ''
 });
 // We can get the file size from the array metadata
@@ -40,7 +40,7 @@ const contents = []
 
 (async function() {
   // Iterate over all results in case query is incomplete
-  for await (let results of tiledbQuery.ReadQuery("TileDB-Inc", "autzen_tiledb", query)) {
+  for await (let results of client.query.ReadQuery("TileDB-Inc", "autzen_tiledb", query)) {
       contents.push(results.contents);
   }
   // Create a buffer from the contents (Array of uint8)
@@ -55,7 +55,7 @@ const Files = () => {
 
   React.useEffect(() => {
     async function fetchData() {
-      for await (let results of tiledbQuery.ReadQuery(
+      for await (let results of tiledbQuery.query.ReadQuery(
         "TileDB-Inc",
         "VLDB17_TileDB",
         query
@@ -85,7 +85,9 @@ const Files = () => {
         <Title>Files</Title>
         <Paragraph>
           Since files are stored as TileDB arrays, we can query the array get
-          the contents and show/download the file.
+          the contents and show/download the file. Furthermore{" "}
+          <b>@tiledb-inc/tiledb-cloud</b> provides a convenient method{" "}
+          <b>downloadFile</b> to download files locally.
         </Paragraph>
         <Title level={4}>Example code</Title>
         <CodeSnippet>{markdown}</CodeSnippet>

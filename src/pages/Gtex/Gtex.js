@@ -6,9 +6,9 @@ import CodeSnippet from "../../components/CodeSnippet/CodeSnippet";
 const { Title, Paragraph } = Typography;
 
 const markdown = `
-const { TileDBQuery } = require("@tiledb-inc/tiledb-cloud");
+import Client from "@tiledb-inc/tiledb-cloud";
 
-const tiledbQuery = new TileDBQuery({
+const client = new Client({
     apiKey: ''
 });
 
@@ -25,7 +25,7 @@ const query = {
 
 (async function() {
   // Iterate over all results in case query is incomplete
-  for await (let results of tiledbQuery.ReadQuery("TileDB-Inc", "gtex-analysis-rnaseqc-gene-tpm", query)) {
+  for await (let results of client.query.ReadQuery("TileDB-Inc", "gtex-analysis-rnaseqc-gene-tpm", query)) {
       console.log(results);
   }
 })();

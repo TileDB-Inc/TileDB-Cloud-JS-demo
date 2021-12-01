@@ -1,8 +1,8 @@
 import React from "react";
 import { Form, Input, Button, Table, Typography } from "antd";
-import { TileDBQuery } from "@tiledb-inc/tiledb-cloud";
+import Client from "@tiledb-inc/tiledb-cloud";
 
-const tiledbQuery = new TileDBQuery({
+const client = new Client({
   apiKey: process.env.REACT_APP_API_KEY_PROD,
 });
 
@@ -40,7 +40,7 @@ const GtexForm = () => {
     };
     setLoading(true);
 
-    const generator = tiledbQuery.ReadQuery(
+    const generator = client.query.ReadQuery(
       "TileDB-Inc",
       "gtex-analysis-rnaseqc-gene-tpm",
       query

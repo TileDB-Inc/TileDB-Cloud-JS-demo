@@ -10,7 +10,7 @@ import {
   Spin,
 } from "antd";
 import Cube from "../../components/Cube";
-import { TileDBQuery, v1 } from "@tiledb-inc/tiledb-cloud";
+import Client, { v1 } from "@tiledb-inc/tiledb-cloud";
 import CodeSnippet from "../../components/CodeSnippet/CodeSnippet";
 import { PlayCircleFilled } from "@ant-design/icons";
 
@@ -20,13 +20,13 @@ const config = {
   apiKey: process.env.REACT_APP_API_KEY_PROD,
 };
 
-const QueryHelper = new TileDBQuery(config);
+const client = new Client(config);
 const arrayAPI = new v1.ArrayApi(config);
 
 const markdown = `
-const { TileDBQuery } = require("@tiledb-inc/tiledb-cloud");
+import Client from "@tiledb-inc/tiledb-cloud";
 
-const tiledbQueries = new TileDBQuery({
+const client = new Client({
     apiKey: ''
 });
 
@@ -45,7 +45,7 @@ const query = {
     }
   }
   
-tiledbQueries.WriteQuery("TileDB", "quickstart_sparse_array", query)
+  client.query.WriteQuery("TileDB", "quickstart_sparse_array", query)
 .then((res) => {
     console.log(res)
 })
@@ -55,14 +55,14 @@ tiledbQueries.WriteQuery("TileDB", "quickstart_sparse_array", query)
 `;
 
 const createWriteQuery = (query, namespace, name) => `
-const { TileDBQuery } = require("@tiledb-inc/tiledb-cloud");
-const tiledbQueries = new TileDBQuery({
+import Client from "@tiledb-inc/tiledb-cloud";
+const client = new Client({
   apiKey: ''
 });
 
 const query = ${query};
 
-tiledbQueries.WriteQuery(${namespace}, ${name}, query)
+client.query.WriteQuery(${namespace}, ${name}, query)
 .then((res) => {
   console.log(res)
 });
@@ -134,7 +134,7 @@ const QuickstartWrite = () => {
     };
     setLoading(true);
 
-    const generator = QueryHelper.ReadQuery(namespace, arrayName, query);
+    const generator = client.query.ReadQuery(namespace, arrayName, query);
     generator
       .next()
       .then(({ value }) => {
@@ -149,14 +149,16 @@ const QuickstartWrite = () => {
   };
 
   const onFinish = (values) => {
+    const [attrName] = attributes;
     const query = {
-      layout: "unordered",
+      layout: "row-major",
+      subarray: [
+        [SelectedCellData.y, SelectedCellData.y],
+        [SelectedCellData.x, SelectedCellData.x],
+      ],
       values: {
-        [dimensions[0]]: {
-          values: [SelectedCellData.y],
-        },
-        [dimensions[1]]: {
-          values: [SelectedCellData.x],
+        [attrName]: {
+          values: [values[attrName]],
         },
       },
     };
@@ -171,7 +173,8 @@ const QuickstartWrite = () => {
     );
 
     setWriteLoading(true);
-    QueryHelper.WriteQuery(namespace, arrayName, query)
+    client.query
+      .WriteQuery(namespace, arrayName, query)
       .then((res) => {
         getArray();
         handleOk();

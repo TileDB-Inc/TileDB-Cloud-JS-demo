@@ -59,8 +59,8 @@ const Intro = () => {
 
           <Title level={3}>Dense writes with subarray</Title>
           <Paragraph>
-            For Dense arrays we can provide a subarray instead of the
-            coordinates and set the order (e.g. layout set to row-major).
+            For Dense arrays user should specify the layout and provide a
+            subarray instead of the coordinates.
           </Paragraph>
           <CodeSnippet>{write_subarray}</CodeSnippet>
           <Divider />

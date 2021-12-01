@@ -1,10 +1,10 @@
 import React from "react";
 import { Form, InputNumber, Button, Table, Typography, Slider } from "antd";
-import { TileDBQuery } from "@tiledb-inc/tiledb-cloud";
+import Client from "@tiledb-inc/tiledb-cloud";
 import LidarVis from "../../components/LidarVis";
 import Timeline from "../../components/Timeline/Timeline";
 
-const tiledbQuery = new TileDBQuery({
+const client = new Client({
   apiKey: process.env.REACT_APP_API_KEY_PROD,
 });
 
@@ -111,7 +111,7 @@ const AutzenForm = () => {
     };
     setLoading(true);
 
-    for await (let results of tiledbQuery.ReadQuery(
+    for await (let results of client.query.ReadQuery(
       "TileDB-Inc",
       "autzen_tiledb",
       query
