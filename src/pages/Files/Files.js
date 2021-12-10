@@ -1,7 +1,8 @@
 import React, { useEffect } from "react";
-import { Typography } from "antd";
+import { Button, Divider, Typography } from "antd";
 import Client from "@tiledb-inc/tiledb-cloud";
 import CodeSnippet from "../../components/CodeSnippet";
+import { PlayCircleFilled } from "@ant-design/icons";
 
 const tiledbQuery = new Client({
   apiKey: process.env.REACT_APP_API_KEY_PROD,
@@ -52,9 +53,11 @@ const contents = []
 const Files = () => {
   const [contents, setContents] = React.useState([]);
   const [dataPdf, setPdfData] = React.useState("");
+  const [loading, setLoading] = React.useState(false);
 
-  React.useEffect(() => {
+  const getFile = React.useCallback(() => {
     async function fetchData() {
+      setLoading(true);
       for await (let results of tiledbQuery.query.ReadQuery(
         "TileDB-Inc",
         "VLDB17_TileDB",
@@ -64,6 +67,7 @@ const Files = () => {
           return c.concat(results.contents || []);
         });
       }
+      setLoading(false);
     }
 
     fetchData();
@@ -84,14 +88,25 @@ const Files = () => {
       <Typography>
         <Title>Files</Title>
         <Paragraph>
-          Since files are stored as TileDB arrays, we can query the array get
-          the contents and show/download the file. Furthermore{" "}
-          <b>@tiledb-inc/tiledb-cloud</b> provides a convenient method{" "}
-          <b>downloadFile</b> to download files locally.
+          Since files (just like TileDB notebooks) are stored as TileDB arrays,
+          we can query the array get the contents and show/download the file.
+          Furthermore <b>@tiledb-inc/tiledb-cloud</b> provides a convenient
+          method <b>downloadFile</b> to download files locally.
         </Paragraph>
         <Title level={4}>Example code</Title>
         <CodeSnippet>{markdown}</CodeSnippet>
-        <br />
+        <Divider />
+        <div>
+          <Button
+            style={{ marginBottom: "20px" }}
+            onClick={getFile}
+            loading={loading}
+            size="large"
+            icon={<PlayCircleFilled />}
+          >
+            Preview pdf
+          </Button>
+        </div>
         {dataPdf && (
           <object
             id="pdfviewer"
