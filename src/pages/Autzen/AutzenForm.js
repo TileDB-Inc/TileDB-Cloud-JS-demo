@@ -1,9 +1,10 @@
 import React from "react";
-import { Form, InputNumber, Button, Table, Typography } from "antd";
-import { TileDBQuery } from "@tiledb-inc/tiledb-cloud";
-import LidarVis from "../components/LidarVis";
+import { Form, InputNumber, Button, Table, Typography, Slider } from "antd";
+import Client from "@tiledb-inc/tiledb-cloud";
+import LidarVis from "../../components/LidarVis";
+import Timeline from "../../components/Timeline/Timeline";
 
-const tiledbQuery = new TileDBQuery({
+const client = new Client({
   apiKey: process.env.REACT_APP_API_KEY_PROD,
 });
 
@@ -89,18 +90,19 @@ const columns = [
     key: "UserData",
   },
 ];
+
 const AutzenForm = () => {
   const [results, setResults] = React.useState([]);
+  const [timelineItems, setTimelineItems] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
+  const stop = React.useRef(false);
   const [form] = Form.useForm();
   const onFinish = async (values) => {
     // Reset results
+    stop.current = false;
+    setTimelineItems([]);
     setResults([]);
-    const ranges = [
-      [values.X_start, values.X_end].filter(Boolean),
-      [values.Y_start, values.Y_end].filter(Boolean),
-      [values.Z_start, values.Z_end].filter(Boolean),
-    ];
+    const ranges = [values.X, values.Y, values.Z];
 
     const query = {
       layout: "row-major",
@@ -109,11 +111,20 @@ const AutzenForm = () => {
     };
     setLoading(true);
 
-    for await (let results of tiledbQuery.ReadQuery(
+    for await (let results of client.query.ReadQuery(
       "TileDB-Inc",
       "autzen_tiledb",
       query
     )) {
+      if (stop.current) {
+        setTimelineItems((items) => {
+          return items.concat({
+            type: "stopping",
+            text: `Stopped`,
+          });
+        });
+        break;
+      }
       // In case the results are null
       if (!Array.isArray(results.Blue)) {
         continue;
@@ -137,10 +148,22 @@ const AutzenForm = () => {
         Z: results.Z[i],
         key: i,
       }));
-      console.log(result);
       setResults((res) => res.concat(result));
+      setTimelineItems((items) => {
+        return items.concat({
+          type: "success",
+          text: `Fetched ${result.length} results`,
+        });
+      });
     }
-
+    if (!stop.current) {
+      setTimelineItems((items) => {
+        return items.concat({
+          type: "completed",
+          text: `Finished`,
+        });
+      });
+    }
     setLoading(false);
   };
 
@@ -152,69 +175,74 @@ const AutzenForm = () => {
     form.resetFields();
   };
 
+  const onStop = () => {
+    stop.current = true;
+  };
+
   return (
     <>
       {!!results.length && <LidarVis data={results} />}
-      <Form
-        form={form}
-        name="basic"
-        labelCol={{ span: 3 }}
-        wrapperCol={{ span: 24 }}
-        style={{ marginTop: "32px" }}
-        initialValues={{
-          X_start: 636800,
-          X_end: 637800,
-          Y_start: 851000,
-          Y_end: 853000,
-          Z_start: 406.14,
-          Z_end: 615.26,
-          bufferSize: 15000000,
-        }}
-        onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
-        autoComplete="off"
-      >
-        <Form.Item label="Buffer size" name="bufferSize">
-          <InputNumber />
-        </Form.Item>
-        <Form.Item label="X Start" name="X_start">
-          <InputNumber />
-        </Form.Item>
-
-        <Form.Item label="X End" name="X_end">
-          <InputNumber />
-        </Form.Item>
-
-        <Form.Item label="Y Start" name="Y_start">
-          <InputNumber />
-        </Form.Item>
-
-        <Form.Item label="Y End" name="Y_end">
-          <InputNumber />
-        </Form.Item>
-
-        <Form.Item label="Z Start" name="Z_start">
-          <InputNumber />
-        </Form.Item>
-
-        <Form.Item label="Z End" name="Z_end">
-          <InputNumber />
-        </Form.Item>
-
-        <Form.Item wrapperCol={{ offset: 3, span: 16 }}>
-          <Button
-            style={{ marginRight: "15px" }}
-            type="primary"
-            htmlType="submit"
-            loading={loading}
+      <div className="Form-wrapper">
+        <Form
+          form={form}
+          name="basic"
+          layout="vertical"
+          labelCol={{ span: 14 }}
+          wrapperCol={{ span: 24 }}
+          style={{ marginTop: "32px" }}
+          initialValues={{
+            X: [636800, 637800],
+            Y: [851000, 853000],
+            Z: [406.14, 615.26],
+            bufferSize: 15000000,
+          }}
+          onFinish={onFinish}
+          onFinishFailed={onFinishFailed}
+          autoComplete="off"
+        >
+          <Form.Item
+            tooltip="Buffer size allocated to the server for the query"
+            label="Buffer size"
+            name="bufferSize"
           >
-            Submit
-          </Button>
-          <Button htmlType="button" onClick={onReset}>
-            Reset
-          </Button>
-        </Form.Item>
-      </Form>
+            <InputNumber style={{ width: "100%" }} />
+          </Form.Item>
+          <Form.Item label="X" name="X">
+            <Slider range min={500000} max={1000000} />
+          </Form.Item>
+          <Form.Item label="Y" name="Y">
+            <Slider range min={500000} max={1000000} />
+          </Form.Item>
+          <Form.Item label="Z" name="Z">
+            <Slider range min={200} max={800} />
+          </Form.Item>
+          <Form.Item wrapperCol={{ offset: 0, span: 24 }}>
+            <Button
+              style={{ marginRight: "15px" }}
+              type="primary"
+              htmlType="submit"
+              loading={loading}
+              size="large"
+            >
+              Submit
+            </Button>
+            <Button
+              htmlType="button"
+              size="large"
+              onClick={onReset}
+              style={{ marginRight: "15px" }}
+            >
+              Reset
+            </Button>
+            {loading && (
+              <Button htmlType="button" size="large" danger onClick={onStop}>
+                Stop
+              </Button>
+            )}
+          </Form.Item>
+        </Form>
+        <Timeline loading={loading} items={timelineItems} />
+      </div>
       {!!results.length && (
         <Typography.Title level={5}>
           Showing {results.length} results

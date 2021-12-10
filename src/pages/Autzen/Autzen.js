@@ -1,17 +1,15 @@
 import * as React from "react";
 import { Typography, Divider } from "antd";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { materialOceanic } from "react-syntax-highlighter/dist/esm/styles/prism";
 import AutzenForm from "./AutzenForm";
-
+import CodeSnippet from "../../components/CodeSnippet/CodeSnippet";
 
 const { Title } = Typography;
 
 const markdown = `
-const { TileDBQuery } = require("@tiledb-inc/tiledb-cloud");
+import Client from "@tiledb-inc/tiledb-cloud";
 
 
-const tiledbQuery = new TileDBQuery({
+const client = new Client({
     apiKey: ''
 });
 
@@ -27,7 +25,7 @@ const query = {
 
 (async function() {
   // Iterate over all results in case query is incomplete
-  for await (let results of tiledbQuery.ReadQuery("TileDB-Inc", "autzen_tiledb", query)) {
+  for await (let results of client.query.ReadQuery("TileDB-Inc", "autzen_tiledb", query)) {
       console.log(results);
   }
 })();
@@ -40,9 +38,7 @@ const Autzen = () => {
         <Title>Lidar</Title>
         <Title level={4}>Example code</Title>
       </Typography>
-      <SyntaxHighlighter language="javascript" style={materialOceanic}>
-        {markdown}
-      </SyntaxHighlighter>
+      <CodeSnippet>{markdown}</CodeSnippet>
       <Divider />
       <AutzenForm />
     </>

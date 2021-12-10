@@ -9,24 +9,24 @@ import {
   InputNumber,
   Spin,
 } from "antd";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { materialOceanic } from "react-syntax-highlighter/dist/esm/styles/prism";
-import Cube from "../components/Cube";
-import { TileDBQuery, v1 } from "@tiledb-inc/tiledb-cloud";
+import Cube from "../../components/Cube";
+import Client, { v1 } from "@tiledb-inc/tiledb-cloud";
+import CodeSnippet from "../../components/CodeSnippet/CodeSnippet";
+import { PlayCircleFilled } from "@ant-design/icons";
 
 const { Title, Paragraph } = Typography;
 
 const config = {
   apiKey: process.env.REACT_APP_API_KEY_PROD,
-}
+};
 
-const QueryHelper = new TileDBQuery(config);
+const client = new Client(config);
 const arrayAPI = new v1.ArrayApi(config);
 
 const markdown = `
-const { TileDBQuery } = require("@tiledb-inc/tiledb-cloud");
+import Client from "@tiledb-inc/tiledb-cloud";
 
-const tiledbQueries = new TileDBQuery({
+const client = new Client({
     apiKey: ''
 });
 
@@ -45,7 +45,7 @@ const query = {
     }
   }
   
-tiledbQueries.WriteQuery("TileDB", "quickstart_sparse_array", query)
+  client.query.WriteQuery("TileDB", "quickstart_sparse_array", query)
 .then((res) => {
     console.log(res)
 })
@@ -54,20 +54,19 @@ tiledbQueries.WriteQuery("TileDB", "quickstart_sparse_array", query)
 });
 `;
 
-
 const createWriteQuery = (query, namespace, name) => `
-const { TileDBQuery } = require("@tiledb-inc/tiledb-cloud");
-const tiledbQueries = new TileDBQuery({
+import Client from "@tiledb-inc/tiledb-cloud";
+const client = new Client({
   apiKey: ''
 });
 
 const query = ${query};
 
-tiledbQueries.WriteQuery(${namespace}, ${name}, query)
+client.query.WriteQuery(${namespace}, ${name}, query)
 .then((res) => {
   console.log(res)
 });
-`
+`;
 
 const QuickstartWrite = () => {
   const [data, setData] = React.useState({});
@@ -81,8 +80,8 @@ const QuickstartWrite = () => {
   });
   const [dimensions, setDimensions] = React.useState([]);
   const [attributes, setAttributes] = React.useState([]);
-  const [queryString, setQueryString] = React.useState('');
-  const quickStartArray = process.env.REACT_APP_QUICKSTART_ARRAY || '';
+  const [queryString, setQueryString] = React.useState("");
+  const quickStartArray = process.env.REACT_APP_QUICKSTART_ARRAY || "";
   const [namespace, arrayName] = quickStartArray.split("/");
 
   React.useEffect(() => {
@@ -92,25 +91,24 @@ const QuickstartWrite = () => {
       );
     } else {
       // Get arraySchema
-      arrayAPI.getArray(namespace, arrayName, 'application/json').then((res) => {
-        const dimensionNames = res.data.domain.dimensions.map((dim) => dim.name);
-        const attributeNames = res.data.attributes.map((attr) => attr.name);
-        setDimensions(dimensionNames);
-        setAttributes(attributeNames);
-      })
+      arrayAPI
+        .getArray(namespace, arrayName, "application/json")
+        .then((res) => {
+          const dimensionNames = res.data.domain.dimensions.map(
+            (dim) => dim.name
+          );
+          const attributeNames = res.data.attributes.map((attr) => attr.name);
+          setDimensions(dimensionNames);
+          setAttributes(attributeNames);
+        });
     }
   }, [quickStartArray, arrayName, namespace]);
 
-
   React.useEffect(() => {
     if (queryString) {
-      message.info(
-        <SyntaxHighlighter language="javascript" style={materialOceanic}>
-        {queryString}
-      </SyntaxHighlighter>
-      )
+      message.info(<CodeSnippet>{queryString}</CodeSnippet>);
     }
-  }, [queryString])
+  }, [queryString]);
 
   const showModal = (x, y, cellData) => {
     setSelectedCellData({ x, y, cellData });
@@ -136,11 +134,10 @@ const QuickstartWrite = () => {
     };
     setLoading(true);
 
-    const generator = QueryHelper.ReadQuery(namespace, arrayName, query);
+    const generator = client.query.ReadQuery(namespace, arrayName, query);
     generator
       .next()
       .then(({ value }) => {
-        console.log(value);
         setData(value);
       })
       .catch((e) => {
@@ -152,14 +149,16 @@ const QuickstartWrite = () => {
   };
 
   const onFinish = (values) => {
+    const [attrName] = attributes;
     const query = {
-      layout: "unordered",
+      layout: "row-major",
+      subarray: [
+        [SelectedCellData.y, SelectedCellData.y],
+        [SelectedCellData.x, SelectedCellData.x],
+      ],
       values: {
-        [dimensions[0]]: {
-          values: [SelectedCellData.y],
-        },
-        [dimensions[1]]: {
-          values: [SelectedCellData.x],
+        [attrName]: {
+          values: [values[attrName]],
         },
       },
     };
@@ -169,10 +168,13 @@ const QuickstartWrite = () => {
       query.values[key].values = [val];
     });
 
-    setQueryString(createWriteQuery(JSON.stringify(query), namespace, arrayName));
+    setQueryString(
+      createWriteQuery(JSON.stringify(query), namespace, arrayName)
+    );
 
     setWriteLoading(true);
-    QueryHelper.WriteQuery(namespace, arrayName, query)
+    client.query
+      .WriteQuery(namespace, arrayName, query)
       .then((res) => {
         getArray();
         handleOk();
@@ -182,24 +184,30 @@ const QuickstartWrite = () => {
       })
       .finally(() => {
         setWriteLoading(false);
-        setQueryString('');
+        setQueryString("");
       });
   };
   return (
     <div>
       <Title>Sparse array write</Title>
       <Title level={4}>Example code</Title>
-      <SyntaxHighlighter language="javascript" style={materialOceanic}>
-        {markdown}
-      </SyntaxHighlighter>
+      <CodeSnippet>{markdown}</CodeSnippet>
       <Divider />
-      <Paragraph>Press the "Get array data" button to see your array as an interactive cube.<br/>You can edit any of the cells by clicking on them and assigning a new value.</Paragraph>
+      <Paragraph>
+        Press the "Preview array" button to see your array as an interactive
+        cube.
+        <br />
+        You can edit any of the cells by clicking on them and assigning a new
+        value.
+      </Paragraph>
       <Button
         style={{ marginBottom: "20px" }}
         onClick={getArray}
         loading={loading}
+        size="large"
+        icon={<PlayCircleFilled />}
       >
-        Get array data
+        Preview array
       </Button>
       {!!Object.keys(data).length && (
         <Spin spinning={loading} tip="Loading...">
@@ -217,6 +225,7 @@ const QuickstartWrite = () => {
             form="cell-form"
             key="submit"
             htmlType="submit"
+            size="large"
             loading={writeloading}
           >
             Submit
@@ -237,7 +246,7 @@ const QuickstartWrite = () => {
           key={`${SelectedCellData.x}+${SelectedCellData.y}`}
         >
           {attributes.map((attr) => (
-            <Form.Item label={`Attribute ${attr}`} name={attr}>
+            <Form.Item key={attr} label={`Attribute ${attr}`} name={attr}>
               <InputNumber style={{ width: 200 }} />
             </Form.Item>
           ))}
