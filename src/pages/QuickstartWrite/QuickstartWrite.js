@@ -10,18 +10,11 @@ import {
   Spin,
 } from "antd";
 import Cube from "../../components/Cube";
-import Client, { v1 } from "@tiledb-inc/tiledb-cloud";
 import CodeSnippet from "../../components/CodeSnippet/CodeSnippet";
 import { PlayCircleFilled } from "@ant-design/icons";
+import client from '../../helpers/client';
 
 const { Title, Paragraph } = Typography;
-
-const config = {
-  apiKey: process.env.REACT_APP_API_KEY_PROD,
-};
-
-const client = new Client(config);
-const arrayAPI = new v1.ArrayApi(config);
 
 const markdown = `
 import Client from "@tiledb-inc/tiledb-cloud";
@@ -91,7 +84,7 @@ const QuickstartWrite = () => {
       );
     } else {
       // Get arraySchema
-      arrayAPI
+      client.ArrayApi
         .getArray(namespace, arrayName, "application/json")
         .then((res) => {
           const dimensionNames = res.data.domain.dimensions.map(

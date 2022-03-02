@@ -1,10 +1,6 @@
 import React from "react";
 import { Form, Input, Button, Table, Typography } from "antd";
-import Client from "@tiledb-inc/tiledb-cloud";
-
-const client = new Client({
-  apiKey: process.env.REACT_APP_API_KEY_PROD,
-});
+import client from '../../helpers/client';
 
 const columns = [
   {

@@ -1,12 +1,8 @@
 import React from "react";
 import { Button, Divider, Typography } from "antd";
-import Client from "@tiledb-inc/tiledb-cloud";
 import CodeSnippet from "../../components/CodeSnippet";
 import { PlayCircleFilled } from "@ant-design/icons";
-
-const tiledbQuery = new Client({
-  apiKey: process.env.REACT_APP_API_KEY_PROD,
-});
+import client from '../../helpers/client';
 
 const { Title, Paragraph } = Typography;
 
@@ -36,7 +32,7 @@ const Files = () => {
   const getFile = React.useCallback(() => {
     async function fetchData() {
       setLoading(true);
-      const { buffer, mimeType } = await tiledbQuery.getFileContents(
+      const { buffer, mimeType } = await client.getFileContents(
         "TileDB-Inc",
         "VLDB17_TileDB"
       );

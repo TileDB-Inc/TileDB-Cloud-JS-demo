@@ -1,12 +1,8 @@
 import React from "react";
 import { Form, InputNumber, Button, Table, Typography, Slider } from "antd";
-import Client from "@tiledb-inc/tiledb-cloud";
 import LidarVis from "../../components/LidarVis";
 import Timeline from "../../components/Timeline/Timeline";
-
-const client = new Client({
-  apiKey: process.env.REACT_APP_API_KEY_PROD,
-});
+import client from '../../helpers/client';
 
 const columns = [
   {
@@ -100,7 +96,6 @@ const BoulderForm = () => {
     stop.current = false;
     setResults([]);
     setTimelineItems([]);
-    console.log(values);
     const ranges = [values.X, values.Y || [], values.Z || []];
 
     const query = {
