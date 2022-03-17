@@ -33,6 +33,12 @@ const MenuComponent = () => {
       <Menu.Item key="5">
         <Link to={routePaths.files}>Files</Link>
       </Menu.Item>
+      <Menu.Item key="6">
+        <Link to={routePaths.udfs}>UDFs</Link>
+      </Menu.Item>
+      <Menu.Item key="7">
+        <Link to={routePaths.sql}>SQL</Link>
+      </Menu.Item>
     </Menu>
   );
 };

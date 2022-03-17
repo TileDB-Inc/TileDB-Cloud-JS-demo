@@ -5,6 +5,8 @@ const routePaths = {
   boulder: "/boulder",
   writes: "/writes",
   files: "/files",
+  udfs: "/udfs",
+  sql: "/sql",
 };
 
 export default routePaths;
