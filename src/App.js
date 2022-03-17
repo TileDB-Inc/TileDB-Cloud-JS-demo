@@ -7,6 +7,8 @@ import Gtex from "./pages/Gtex";
 import Header from "./components/Header";
 import Intro from "./pages/Intro";
 import Files from "./pages/Files";
+import UDFs from "./pages/UDFs";
+import SQL from "./pages/SQL/SQL";
 import Menu from "./components/Menu";
 import { Routes, Route } from "react-router-dom";
 import routePaths from "./constants/routePaths/routePaths";
@@ -25,6 +27,8 @@ function App() {
             <Route path={routePaths.boulder} element={<Boulder />} />
             <Route path={routePaths.writes} element={<QuickstartWrite />} />
             <Route path={routePaths.files} element={<Files />} />
+            <Route path={routePaths.udfs} element={<UDFs />} />
+            <Route path={routePaths.sql} element={<SQL />} />
           </Routes>
         </main>
       </div>
