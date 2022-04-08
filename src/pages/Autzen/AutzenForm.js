@@ -101,7 +101,7 @@ const AutzenForm = () => {
     const ranges = [values.X, values.Y, values.Z];
 
     const query = {
-      layout: "row-major",
+      layout: "unordered",
       ranges: ranges,
       bufferSize: values.bufferSize,
     };
@@ -126,16 +126,16 @@ const AutzenForm = () => {
         continue;
       }
       const result = results.Blue.map((t, i) => ({
-        Blue: t,
+        Blue: t / 255,
         UserData: results.UserData[i],
         ScanDirectionFlag: results.ScanDirectionFlag[i],
         ScanAngleRank: results.ScanAngleRank[i],
         ReturnNumber: results.ReturnNumber[i],
-        Red: results.Red[i],
+        Red: results.Red[i] / 255,
         PointSourceId: results.PointSourceId[i],
         NumberOfReturns: results.NumberOfReturns[i],
         Intensity: results.Intensity[i],
-        Green: results.Green[i],
+        Green: results.Green[i] / 255,
         GpsTime: results.GpsTime[i],
         EdgeOfFlightLine: results.EdgeOfFlightLine[i],
         Classification: results.Classification[i],
