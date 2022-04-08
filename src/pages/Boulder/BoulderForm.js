@@ -97,9 +97,8 @@ const BoulderForm = () => {
     setResults([]);
     setTimelineItems([]);
     const ranges = [values.X, values.Y || [], values.Z || []];
-
     const query = {
-      layout: "row-major",
+      layout: "unordered",
       ranges: ranges,
       bufferSize: values.bufferSize,
     };
@@ -123,25 +122,27 @@ const BoulderForm = () => {
       if (!Array.isArray(results.Blue)) {
         continue;
       }
-      const result = results.Blue.map((t, i) => ({
-        Blue: t,
-        UserData: results.UserData[i],
-        ScanDirectionFlag: results.ScanDirectionFlag[i],
-        ScanAngleRank: results.ScanAngleRank[i],
-        ReturnNumber: results.ReturnNumber[i],
-        Red: results.Red[i],
-        PointSourceId: results.PointSourceId[i],
-        NumberOfReturns: results.NumberOfReturns[i],
-        Intensity: results.Intensity[i],
-        Green: results.Green[i],
-        GpsTime: results.GpsTime[i],
-        EdgeOfFlightLine: results.EdgeOfFlightLine[i],
-        Classification: results.Classification[i],
-        X: results.X[i],
-        Y: results.Y[i],
-        Z: results.Z[i],
-        key: i,
-      }));
+      const result = results.Blue.map((t, i) => {
+        return ({
+          Blue: t / 65535,
+          UserData: results.UserData[i],
+          ScanDirectionFlag: results.ScanDirectionFlag[i],
+          ScanAngleRank: results.ScanAngleRank[i],
+          ReturnNumber: results.ReturnNumber[i],
+          Red: results.Red[i] / 65535,
+          PointSourceId: results.PointSourceId[i],
+          NumberOfReturns: results.NumberOfReturns[i],
+          Intensity: results.Intensity[i],
+          Green: results.Green[i] / 65535,
+          GpsTime: results.GpsTime[i],
+          EdgeOfFlightLine: results.EdgeOfFlightLine[i],
+          Classification: results.Classification[i],
+          X: results.X[i],
+          Y: results.Y[i],
+          Z: results.Z[i],
+          key: i,
+        })
+      });
       setResults((res) => res.concat(result));
       setTimelineItems((items) => {
         return items.concat({
