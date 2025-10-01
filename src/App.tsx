@@ -12,16 +12,30 @@ import SQL from "./pages/SQL/SQL";
 import Menu from "./components/Menu";
 import { Routes, Route } from "react-router-dom";
 import routePaths from "./constants/routePaths/routePaths";
+import { ConfigProvider } from 'antd';
 
-function App() {
+const App: React.FC = () => {
   return (
-    <div>
+    <ConfigProvider
+      theme={{
+        token: {
+          fontFamily: "Inter, sans-serif",
+          colorPrimary: '#0077FF',
+          borderRadius: 6
+        },
+        components: {
+          Button: {
+            fontWeight: 'bold'
+          }
+        }
+      }}
+    >   
       <Header />
       <div className="App">
         <Menu />
         <main className="App__main">
           <Routes>
-            <Route exact path={routePaths.root} element={<Intro />} />
+            <Route path={routePaths.root} element={<Intro />} />
             <Route path={routePaths.gtex} element={<Gtex />} />
             <Route path={routePaths.lidar} element={<Autzen />} />
             <Route path={routePaths.boulder} element={<Boulder />} />
@@ -32,8 +46,8 @@ function App() {
           </Routes>
         </main>
       </div>
-    </div>
+    </ConfigProvider>
   );
-}
+};
 
 export default App;

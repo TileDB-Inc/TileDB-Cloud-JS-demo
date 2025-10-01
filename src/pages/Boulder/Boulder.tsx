@@ -7,6 +7,7 @@ const { Title, Paragraph } = Typography;
 
 const markdown = `
 import Client from "@tiledb-inc/tiledb-cloud";
+import { Layout } from '@tiledb-inc/tiledb-cloud/v3';
 
 
 const client = new Client({
@@ -18,14 +19,14 @@ const ranges = [
 ]
 
 const query = {
-    layout: "row-major",
+    layout: Layout.Unordered,
     ranges: ranges,
     bufferSize: 15000000000000,
 };
 
 (async function() {
   // Iterate over all results in case query is incomplete
-  for await (let results of client.query.ReadQuery("TileDB-Inc", "boulder", query)) {
+  for await (let results of client.query.ReadQuery("TileDB-Inc.", "xanthos-test", "Cloud JS Demo/Boulder", query)) {
       console.log(results);
   }
 })();

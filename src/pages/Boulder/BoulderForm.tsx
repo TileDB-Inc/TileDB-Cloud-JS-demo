@@ -3,6 +3,39 @@ import { Form, InputNumber, Button, Table, Typography, Slider } from "antd";
 import LidarVis from "../../components/LidarVis";
 import Timeline from "../../components/Timeline/Timeline";
 import client from '../../helpers/client';
+import type { QueryData } from "@tiledb-inc/tiledb-cloud";
+import { Layout } from "@tiledb-inc/tiledb-cloud/v3";
+
+type ResultItem = {
+  X: number;
+  Y: number;
+  Z: number;
+  Intensity:number;
+  ReturnNumber: number;
+  NumberOfReturns: number;
+  ScanDirectionFlag: number;
+  EdgeOfFlightLine: number;
+  Classification: number;
+  ScanAngleRank: number;
+  UserData: number;
+  PointSourceId: number;
+  GpsTime: number;
+  Red: number;
+  Green: number;
+  Blue: number;
+  OriginId: number;
+};
+
+type Result<Type> = {
+  [Property in keyof Type]: Array<Type[Property]>;
+};
+
+type FormProps = {
+  X: Array<number>;
+  Y?: Array<number>;
+  Z?: Array<number>;
+  bufferSize: number;
+}
 
 const columns = [
   {
@@ -86,27 +119,28 @@ const columns = [
     key: "UserData",
   },
 ];
-const BoulderForm = () => {
-  const [results, setResults] = React.useState([]);
+const BoulderForm: React.FC = () => {
+  const [results, setResults] = React.useState<Array<Record<keyof ResultItem, number>>>([]);
   const [loading, setLoading] = React.useState(false);
-  const [timelineItems, setTimelineItems] = React.useState([]);
+  const [timelineItems, setTimelineItems] = React.useState<Array<{text: string; type: string}>>([]);
   const stop = React.useRef(false);
   const [form] = Form.useForm();
-  const onFinish = async (values) => {
+  const onFinish = async (values: FormProps) => {
     stop.current = false;
     setResults([]);
     setTimelineItems([]);
     const ranges = [values.X, values.Y || [], values.Z || []];
-    const query = {
-      layout: "unordered",
+    const query: QueryData = {
+      layout: Layout.Unordered,
       ranges: ranges,
       bufferSize: values.bufferSize,
     };
     setLoading(true);
 
     for await (let results of client.query.ReadQuery(
-      "TileDB-Inc",
-      "boulder",
+      "TileDB-Inc.",
+      "xanthos-test",
+      "Cloud JS Demo/Boulder",
       query
     )) {
       if (stop.current) {
@@ -122,27 +156,34 @@ const BoulderForm = () => {
       if (!Array.isArray(results.Blue)) {
         continue;
       }
-      const result = results.Blue.map((t, i) => {
-        return ({
-          Blue: t / 65535,
-          UserData: results.UserData[i],
-          ScanDirectionFlag: results.ScanDirectionFlag[i],
-          ScanAngleRank: results.ScanAngleRank[i],
-          ReturnNumber: results.ReturnNumber[i],
-          Red: results.Red[i] / 65535,
-          PointSourceId: results.PointSourceId[i],
-          NumberOfReturns: results.NumberOfReturns[i],
-          Intensity: results.Intensity[i],
-          Green: results.Green[i] / 65535,
-          GpsTime: results.GpsTime[i],
-          EdgeOfFlightLine: results.EdgeOfFlightLine[i],
-          Classification: results.Classification[i],
-          X: results.X[i],
-          Y: results.Y[i],
-          Z: results.Z[i],
-          key: i,
-        })
-      });
+
+      const typedResults = results as Result<ResultItem>;
+
+      const pointCount = results.Blue.length;
+      const result: Array<ResultItem> = new Array(pointCount);
+
+      for (let i = 0; i < pointCount; ++i) {
+        result[i] = {
+          Blue: typedResults.Blue[i] / 65535,
+          UserData: typedResults.UserData[i],
+          ScanDirectionFlag: typedResults.ScanDirectionFlag[i],
+          ScanAngleRank: typedResults.ScanAngleRank[i],
+          ReturnNumber: typedResults.ReturnNumber[i],
+          Red: typedResults.Red[i] / 65535,
+          PointSourceId: typedResults.PointSourceId[i],
+          NumberOfReturns: typedResults.NumberOfReturns[i],
+          Intensity: typedResults.Intensity[i],
+          Green: typedResults.Green[i] / 65535,
+          GpsTime: typedResults.GpsTime[i],
+          EdgeOfFlightLine: typedResults.EdgeOfFlightLine[i],
+          Classification: typedResults.Classification[i],
+          OriginId: typedResults.OriginId[i],
+          X: typedResults.X[i],
+          Y: typedResults.Y[i],
+          Z: typedResults.Z[i]
+        }
+      }
+
       setResults((res) => res.concat(result));
       setTimelineItems((items) => {
         return items.concat({
@@ -162,7 +203,7 @@ const BoulderForm = () => {
     setLoading(false);
   };
 
-  const onFinishFailed = (errorInfo) => {
+  const onFinishFailed = (errorInfo: unknown) => {
     console.log("Failed:", errorInfo);
   };
 
@@ -201,7 +242,7 @@ const BoulderForm = () => {
             <InputNumber style={{ width: "100%" }} />
           </Form.Item>
           <Form.Item label="X" name="X">
-            <Slider range min={400000} max={800000} />
+            <Slider range min={475000} max={476000} />
           </Form.Item>
 
           <Form.Item

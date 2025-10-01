@@ -2,7 +2,12 @@ import React from "react";
 import { Timeline } from "antd";
 import { ClockCircleOutlined, CheckOutlined } from "@ant-design/icons";
 
-const TimelineComp = ({ loading, items = [] }) => {
+interface TimelineProps {
+  loading: boolean;
+  items: Array<{text: string; type: string}>;
+}
+
+const TimelineComp: React.FC<TimelineProps> = ({ loading, items = [] }) => {
   return (
     <Timeline className="timeline-list" pending={loading}>
       {items.map((item, i) => {

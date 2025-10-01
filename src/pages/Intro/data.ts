@@ -1,6 +1,6 @@
 export const basic = `
 import Client from "@tiledb-inc/tiledb-cloud";
-import { Layout } from '@tiledb-inc/tiledb-cloud/lib/v2';
+import { Layout } from '@tiledb-inc/tiledb-cloud/lib/v3';
 
 const client = new Client({
     apiKey: 'myApiKey'
@@ -15,7 +15,7 @@ const query = {
     bufferSize: 15000000000000,
 };
 
-const generator = client.query.ReadQuery("namespace", "arrayName", query);
+const generator = client.query.ReadQuery("workspace", "teamspace", "arrayName", query);
 // Get the first value (and the only value, if the query is complete)
 (async function() {
   const { value, done } = await generator.next();
@@ -27,7 +27,7 @@ const generator = client.query.ReadQuery("namespace", "arrayName", query);
 
 export const multi_range = `
 import Client from "@tiledb-inc/tiledb-cloud";
-import { Layout } from '@tiledb-inc/tiledb-cloud/lib/v2';
+import { Layout } from '@tiledb-inc/tiledb-cloud/lib/v3';
 
 const client = new Client({
     apiKey: 'myApiKey'
@@ -44,7 +44,7 @@ const query = {
 
 // Iterate over all results in case of an incomplete query
 (async function() {
-    for await (let results of client.query.ReadQuery("namespace", "arrayName", query)) {
+    for await (let results of client.query.ReadQuery("workspace", "teamspace", "arrayName", query)) {
         console.log(results);
     }
 })()
@@ -53,7 +53,7 @@ const query = {
 
 export const whole_dim = `
 import Client from "@tiledb-inc/tiledb-cloud";
-import { Layout } from '@tiledb-inc/tiledb-cloud/lib/v2';
+import { Layout } from '@tiledb-inc/tiledb-cloud/lib/v3';
 
 const client = new Client({
     apiKey: 'myApiKey'
@@ -70,7 +70,7 @@ const query = {
 };
 
 // Manually iterate over all results
-const generator = client.query.ReadQuery("namespace", "arrayName", query);
+const generator = client.query.ReadQuery("workspace", "teamspace", "arrayName", query);
 (async function() {
     const { value, done } = await generator.next();
     console.log(value);
@@ -87,7 +87,7 @@ const generator = client.query.ReadQuery("namespace", "arrayName", query);
 
 export const basic_write = `
 import Client from "@tiledb-inc/tiledb-cloud";
-import { Layout } from '@tiledb-inc/tiledb-cloud/lib/v2';
+import { Layout } from '@tiledb-inc/tiledb-cloud/lib/v3';
 
 const client = new Client({
     apiKey: 'myApiKey'
@@ -111,7 +111,7 @@ const query = {
   },
 };
 
-client.query.WriteQuery("my_namespace", "my_array", query)
+client.query.WriteQuery("workspace", "teamspace", "my_array", query)
   .then((result) => {
     // returns the query object
       console.log(result);
@@ -121,7 +121,7 @@ client.query.WriteQuery("my_namespace", "my_array", query)
 
 export const write_subarray = `
 import Client from "@tiledb-inc/tiledb-cloud";
-import { Layout } from '@tiledb-inc/tiledb-cloud/lib/v2';
+import { Layout } from '@tiledb-inc/tiledb-cloud/lib/v3';
 
 const client = new Client({
     apiKey: 'myApiKey'
@@ -140,7 +140,7 @@ const query = {
   },
 };
 
-client.query.WriteQuery("my_namespace", "my_array", query)
+client.query.WriteQuery("workspace", "teamspace", "my_array", query)
   .then((result) => {
     // returns the query object
       console.log(result);
@@ -149,7 +149,7 @@ client.query.WriteQuery("my_namespace", "my_array", query)
 
 export const write_nullable = `
 import Client from "@tiledb-inc/tiledb-cloud";
-import { Layout } from '@tiledb-inc/tiledb-cloud/lib/v2';
+import { Layout } from '@tiledb-inc/tiledb-cloud/lib/v3';
 
 const client = new Client({
     apiKey: 'myApiKey'
@@ -181,7 +181,7 @@ const query = {
   }
 };
 
-client.query.WriteQuery("my_namespace", "my_array", query)
+client.query.WriteQuery("workspace", "teamspace", "my_array", query)
   .then((result) => {
     // returns the query object
       console.log(result);

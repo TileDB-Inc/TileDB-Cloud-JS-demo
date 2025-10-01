@@ -1,6 +1,24 @@
 import React from "react";
 import { Form, Input, Button, Table, Typography } from "antd";
 import client from '../../helpers/client';
+import { type QueryData } from "@tiledb-inc/tiledb-cloud";
+import { Layout } from "@tiledb-inc/tiledb-cloud/v3";
+
+type ResultItem = {
+  gene_id: string;
+  sample: string;
+  tpm: number;
+};
+
+type Result<Type> = {
+  [Property in keyof Type]: Array<Type[Property]>;
+};
+
+type FormProps = {
+  gene_id: string;
+  sample_start: string;
+  sample_end: string;
+}
 
 const columns = [
   {
@@ -20,37 +38,45 @@ const columns = [
   },
 ];
 const GtexForm = () => {
-  const [results, setResults] = React.useState([]);
+  const [results, setResults] = React.useState<Array<ResultItem>>([]);
   const [loading, setLoading] = React.useState(false);
   const [form] = Form.useForm();
-  const onFinish = (values) => {
+  const onFinish = (values: FormProps) => {
     const ranges = [
       [values.gene_id, values.gene_id].filter(Boolean),
       [values.sample_start, values.sample_end].filter(Boolean),
     ];
 
-    const query = {
-      layout: "row-major",
+    console.log(ranges);
+
+    const query: QueryData = {
+      layout: Layout.RowMajor,
       ranges: ranges,
       bufferSize: 150000000,
     };
     setLoading(true);
 
     const generator = client.query.ReadQuery(
-      "TileDB-Inc",
-      "gtex-analysis-rnaseqc-gene-tpm",
+      "TileDB-Inc.",
+      "xanthos-test",
+      "Cloud JS Demo/gtex-analysis-rnaseqc-gene-tpm",
       query
     );
     generator
       .next()
       .then(({ value: res }) => {
-        const result = res.tpm.map((t, i) => ({
-          tpm: t,
-          sample: res.sample[i],
-          gene_id: res.gene_id[i],
-          key: i,
-        }));
-        console.log(result);
+        const typedResults = res as Result<ResultItem>;
+        const resultCount = typedResults.sample.length;
+        const result: Array<ResultItem> = new Array(resultCount);
+
+        for (let i = 0; i < resultCount; ++i) {
+          result[i] = {
+            tpm: typedResults.tpm[i],
+            sample: typedResults.sample[i],
+            gene_id: typedResults.gene_id[i],
+          };
+        }
+        
         setResults(result);
       })
       .catch((e) => {
@@ -85,15 +111,15 @@ const GtexForm = () => {
         onFinishFailed={onFinishFailed}
         autoComplete="off"
       >
-        <Form.Item label="gene_id" name="gene_id">
+        <Form.Item label="Gene id" name="gene_id">
           <Input />
         </Form.Item>
 
-        <Form.Item label="sample start" name="sample_start">
+        <Form.Item label="Sample start" name="sample_start">
           <Input />
         </Form.Item>
 
-        <Form.Item label="sample end" name="sample_end">
+        <Form.Item label="Sample end" name="sample_end">
           <Input />
         </Form.Item>
 

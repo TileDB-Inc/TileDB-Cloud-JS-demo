@@ -1,5 +1,5 @@
-import { Divider, Typography, Tabs } from "antd";
 import React from "react";
+import { Divider, Typography, Tabs } from "antd";
 import CodeSnippet from "../../components/CodeSnippet/CodeSnippet";
 import {
   basic,

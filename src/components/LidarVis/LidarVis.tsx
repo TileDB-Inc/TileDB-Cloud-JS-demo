@@ -1,14 +1,19 @@
 import {
   Vector3,
   PointsCloudSystem,
-  Color3,
   ArcRotateCamera,
+  Scene,
+  CloudPoint,
+  Color4,
 } from "@babylonjs/core";
 import React from "react";
 import SceneComponent from "./SceneComponent";
 
-function minMaxArray(arr, idx) {
-  var max = -Number.MAX_VALUE,
+function minMaxArray(
+  arr: Array<Record<string, number>>,
+  idx: string
+): { min: number; max: number } {
+  let max = -Number.MAX_VALUE,
     min = Number.MAX_VALUE;
   arr.forEach(function (e) {
     if (max < e[idx]) {
@@ -21,14 +26,15 @@ function minMaxArray(arr, idx) {
   return { max: max, min: min };
 }
 
-const LidarVis = ({ data }) => {
-  const [canvas, setCanvas] = React.useState(null);
+const LidarVis: React.FC<{ data: Array<Record<string, number>> }> = ({
+  data,
+}) => {
   const { max: maxX, min: minX } = minMaxArray(data, "X");
   const { max: maxY, min: minY } = minMaxArray(data, "Y");
   const { max: maxZ, min: minZ } = minMaxArray(data, "Z");
-  const num_coords = data.length;
+  const pointCount = data.length;
 
-  const onSceneReady = (scene) => {
+  const onSceneReady = (scene: Scene) => {
     // This creates and positions a free camera (non-mesh)
     const camera = new ArcRotateCamera(
       "Camera",
@@ -38,32 +44,31 @@ const LidarVis = ({ data }) => {
       new Vector3(0, 0, 0),
       scene
     );
-    camera.attachControl(canvas, true);
+    camera.attachControl(true);
     camera.wheelPrecision = 0.5;
 
     const pcs = new PointsCloudSystem("pcs", 1, scene, { updatable: false });
 
-    const myLoader = function (particle, i, s) {
+    const pointLoader = (particle: CloudPoint, index: number) => {
       particle.position = new Vector3(
-        (data[i].X - minX) / (maxX - minX),
-        (data[i].Y - minY) / (maxY - minY),
-        ((data[i].Z - minZ) / (maxZ - minZ)) * 0.75
+        (data[index].X - minX) / (maxX - minX),
+        (data[index].Y - minY) / (maxY - minY),
+        ((data[index].Z - minZ) / (maxZ - minZ))
       );
 
-      particle.color = new Color3(data[i].Red, data[i].Green, data[i].Blue);
+      particle.color = new Color4(data[index].Red, data[index].Green, data[index].Blue, 1);
     };
 
-    pcs.addPoints(num_coords, myLoader);
+    pcs.addPoints(pointCount, pointLoader);
     pcs.buildMeshAsync();
   };
 
   return (
     <div className="lidar-visualization">
       <SceneComponent
+        id="lidar-vis-canvas"
         antialias
         onSceneReady={onSceneReady}
-        id="lidar-vis-canvas"
-        setCanvas={setCanvas}
       />
     </div>
   );

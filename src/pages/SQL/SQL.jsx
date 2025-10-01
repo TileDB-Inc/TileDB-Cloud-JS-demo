@@ -1,5 +1,5 @@
-import { Divider, Typography } from "antd";
 import React from "react";
+import { Divider, Typography } from "antd";
 import CodeSnippet from "../../components/CodeSnippet/CodeSnippet";
 
 const { Title, Paragraph } = Typography;

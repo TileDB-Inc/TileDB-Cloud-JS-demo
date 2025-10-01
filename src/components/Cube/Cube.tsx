@@ -1,16 +1,23 @@
 import { Typography } from "antd";
 import "./Cube.css";
+import type React from "react";
 
-function makeArray(a, b) {
-  var arr = new Array(a).fill(0);
-  for (var i = 0; i < a; i++) arr[i] = new Array(b).fill(0);
+function makeArray(outer_size: number, inner_size: number): Array<Array<number>> {
+  var arr = new Array(outer_size).fill(0);
+  for (var i = 0; i < outer_size; i++) arr[i] = new Array(inner_size).fill(0);
   return arr;
 }
 
-const Cube = ({ dimensions, data, dimensionNames, onClick }) => {
+interface CubeProps {
+  dimensions: number;
+  dimensionNames: Array<string>;
+  onClick: (x: number, y: number, data: any) => void;
+}
+
+const Cube: React.FC<CubeProps> = ({ dimensions, data, dimensionNames, onClick }) => {
   const [xDimension, yDimension] = dimensionNames;
   const cells = makeArray(dimensions, dimensions);
-  const getCellData = (x, y) => {
+  const getCellData = (x: number, y: number) => {
     let result;
     data[xDimension].forEach((xDim, i) => {
       if (xDim === x && data[yDimension][i] === y) {
@@ -54,7 +61,14 @@ const Cube = ({ dimensions, data, dimensionNames, onClick }) => {
 
 export default Cube;
 
-const Cell = ({ cellData, x, y, onClick }) => {
+interface CellProps {
+  cellData: any;
+  x: number;
+  y: number;
+  onClick: (x: number, y: number, data: any) => void;
+}
+
+const Cell: React.FC<CellProps> = ({ cellData, x, y, onClick }) => {
   const { dimensions, ...attributes } = cellData;
   const cellDataFlattened = { ...dimensions, ...attributes };
 

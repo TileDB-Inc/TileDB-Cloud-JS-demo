@@ -7,6 +7,7 @@ const { Title, Paragraph } = Typography;
 
 const markdown = `
 import Client from "@tiledb-inc/tiledb-cloud";
+import { Layout } from '@tiledb-inc/tiledb-cloud/v3';
 
 const client = new Client({
     apiKey: ''
@@ -18,7 +19,7 @@ const ranges = [
 ]
 
 const query = {
-    layout: "row-major",
+    layout: Layout.RowMajor,
     ranges: ranges,
     bufferSize: 150000000,
 };
@@ -31,7 +32,7 @@ const query = {
 })();
 `;
 
-const Gtex = () => {
+const Gtex: React.FC = () => {
   return (
     <>
       <Typography>
