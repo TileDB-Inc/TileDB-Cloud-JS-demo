@@ -2,7 +2,7 @@ import React from "react";
 import { Form, InputNumber, Button, Table, Typography, Slider } from "antd";
 import LidarVis from "../../components/LidarVis";
 import Timeline from "../../components/Timeline/Timeline";
-import client from '../../helpers/client';
+import client from "../../helpers/client";
 
 const columns = [
   {
@@ -105,8 +105,8 @@ const BoulderForm = () => {
     setLoading(true);
 
     for await (let results of client.query.ReadQuery(
-      "TileDB-Inc",
-      "boulder",
+      "Kostas-private",
+      "Arrays/boulder",
       query
     )) {
       if (stop.current) {
@@ -123,7 +123,7 @@ const BoulderForm = () => {
         continue;
       }
       const result = results.Blue.map((t, i) => {
-        return ({
+        return {
           Blue: t / 65535,
           UserData: results.UserData[i],
           ScanDirectionFlag: results.ScanDirectionFlag[i],
@@ -141,7 +141,7 @@ const BoulderForm = () => {
           Y: results.Y[i],
           Z: results.Z[i],
           key: i,
-        })
+        };
       });
       setResults((res) => res.concat(result));
       setTimelineItems((items) => {
