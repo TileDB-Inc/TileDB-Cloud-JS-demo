@@ -105,8 +105,9 @@ const BoulderForm = () => {
     setLoading(true);
 
     for await (let results of client.query.ReadQuery(
+      "TileDB-Inc.",
       "Kostas-private",
-      "Arrays/boulder",
+      "ast_d67ibrq22lds72ppmmvg",
       query
     )) {
       if (stop.current) {
