@@ -105,9 +105,9 @@ const BoulderForm = () => {
     setLoading(true);
 
     for await (let results of client.query.ReadQuery(
-      "TileDB-Inc.",
-      "Kostas-private",
-      "ast_d67ibrq22lds72ppmmvg",
+      import.meta.env.VITE_BOULDER_WORKSPACE,
+      import.meta.env.VITE_BOULDER_TEAMSPACE,
+      import.meta.env.VITE_BOULDER_ASSET_ID,
       query
     )) {
       if (stop.current) {

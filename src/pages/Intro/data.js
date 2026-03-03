@@ -15,7 +15,7 @@ const query = {
     bufferSize: 15000000000000,
 };
 
-const generator = client.query.ReadQuery("namespace", "arrayName", query);
+const generator = client.query.ReadQuery("workspace", "teamspace", "assetId", query);
 // Get the first value (and the only value, if the query is complete)
 (async function() {
   const { value, done } = await generator.next();
@@ -44,7 +44,7 @@ const query = {
 
 // Iterate over all results in case of an incomplete query
 (async function() {
-    for await (let results of client.query.ReadQuery("namespace", "arrayName", query)) {
+    for await (let results of client.query.ReadQuery("workspace", "teamspace", "assetId", query)) {
         console.log(results);
     }
 })()
@@ -70,7 +70,7 @@ const query = {
 };
 
 // Manually iterate over all results
-const generator = client.query.ReadQuery("namespace", "arrayName", query);
+const generator = client.query.ReadQuery("workspace", "teamspace", "assetId", query);
 (async function() {
     const { value, done } = await generator.next();
     console.log(value);

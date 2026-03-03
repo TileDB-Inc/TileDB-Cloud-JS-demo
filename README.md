@@ -10,21 +10,56 @@ Run `npm install` to install the dependencies needed for this demo. To install [
 
 ### Setup
 
-Create a `.env` file in the root folder, specifying your [TileDB apiKey](https://docs.tiledb.com/cloud/how-to/account/create-api-tokens):
+Create a `.env` file in the root folder with the following variables:
+
+#### Authentication
+
+Your [TileDB API key](https://docs.tiledb.com/cloud/how-to/account/create-api-tokens) (required):
 
 ```
-REACT_APP_API_KEY_PROD=MY_TILEDB_API_KEY
+VITE_API_KEY=MY_TILEDB_API_KEY
 ```
 
+Optionally, you can override the default API base path:
+
+```
+VITE_API_BASE_PATH=https://api.tiledb.com
+```
+
+#### Per-page asset configuration
+
+Each demo page requires a `workspace`, `teamspace` and `asset_id` to identify the array to query:
+
+```
+# GTEx
+VITE_GTEX_WORKSPACE=TileDB-Inc
+VITE_GTEX_TEAMSPACE=TileDB-Inc
+VITE_GTEX_ASSET_ID=ast_d67iala22lds72ppmmog
+
+# Autzen Lidar
+VITE_AUTZEN_WORKSPACE=TileDB-Inc
+VITE_AUTZEN_TEAMSPACE=TileDB-Inc
+VITE_AUTZEN_ASSET_ID=autzen_tiledb
+
+# Boulder Lidar
+VITE_BOULDER_WORKSPACE=TileDB-Inc
+VITE_BOULDER_TEAMSPACE=TileDB-Inc
+VITE_BOULDER_ASSET_ID=ast_d67ibrq22lds72ppmmvg
+
+# Files
+VITE_FILES_WORKSPACE=TileDB-Inc
+VITE_FILES_TEAMSPACE=TileDB-Inc
+VITE_FILES_ASSET_ID=VLDB17_TileDB
+```
 
 ### Working with the "Interactive write" example
 
 User can [create an array](https://docs.tiledb.com/cloud/how-to/arrays/create-arrays) and view it as an interactive 2-dimensional cube. By clicking a cell, user can edit the attributes and see it reflected in the cube. <br/>
 
-The namespace/name of the array should be set in the `.env` file
+The workspace, teamspace and asset ID of the array should be set in the `.env` file as a `/`-separated string:
 
 ```
-REACT_APP_QUICKSTART_ARRAY=my_namespace/my_array
+VITE_QUICKSTART_ARRAY=my_workspace/my_teamspace/my_asset_id
 ```
 
 *Limitations:* Right now the visualization is limited to work only with 4*4 arrays it is adviced to use either [quickstart_dense](https://github.com/TileDB-Inc/TileDB/blob/dev/examples/cpp_api/quickstart_dense.cc) or [quickstart_sparse](https://github.com/TileDB-Inc/TileDB/blob/dev/examples/cpp_api/quickstart_sparse.cc) example arrays.

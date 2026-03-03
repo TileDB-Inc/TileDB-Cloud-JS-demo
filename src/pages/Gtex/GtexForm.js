@@ -37,9 +37,9 @@ const GtexForm = () => {
     setLoading(true);
 
     const generator = client.query.ReadQuery(
-      "TileDB-Inc.",
-      "Kostas-private",
-      "ast_d67iala22lds72ppmmog",
+      import.meta.env.VITE_GTEX_WORKSPACE,
+      import.meta.env.VITE_GTEX_TEAMSPACE,
+      import.meta.env.VITE_GTEX_ASSET_ID,
       query
     );
     generator
