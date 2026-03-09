@@ -12,7 +12,7 @@ import {
 import Cube from "../../components/Cube";
 import CodeSnippet from "../../components/CodeSnippet/CodeSnippet";
 import { PlayCircleFilled } from "@ant-design/icons";
-import client from '../../helpers/client';
+import client from "../../helpers/client";
 
 const { Title, Paragraph } = Typography;
 
@@ -47,7 +47,7 @@ const query = {
 });
 `;
 
-const createWriteQuery = (query, namespace, name) => `
+const createWriteQuery = (query, workspace, teamspace, assetId) => `
 import Client from "@tiledb-inc/tiledb-cloud";
 const client = new Client({
   apiKey: ''
@@ -55,7 +55,7 @@ const client = new Client({
 
 const query = ${query};
 
-client.query.WriteQuery(${namespace}, ${name}, query)
+client.query.WriteQuery(${workspace}, ${teamspace}, ${assetId}, query)
 .then((res) => {
   console.log(res)
 });
@@ -74,28 +74,31 @@ const QuickstartWrite = () => {
   const [dimensions, setDimensions] = React.useState([]);
   const [attributes, setAttributes] = React.useState([]);
   const [queryString, setQueryString] = React.useState("");
-  const quickStartArray = process.env.REACT_APP_QUICKSTART_ARRAY || "";
-  const [namespace, arrayName] = quickStartArray.split("/");
+  const quickStartArray = import.meta.env.VITE_QUICKSTART_ARRAY || "";
+  const [workspace, teamspace, assetId] = quickStartArray.split("/");
 
   React.useEffect(() => {
     if (!quickStartArray) {
       message.error(
-        "Environmental variable REACT_APP_QUICKSTART_ARRAY is needed for this example to work"
+        "Environmental variable VITE_QUICKSTART_ARRAY is needed for this example to work"
       );
     } else {
       // Get arraySchema
-      client.ArrayApi
-        .getArray(namespace, arrayName, "application/json")
-        .then((res) => {
-          const dimensionNames = res.data.domain.dimensions.map(
-            (dim) => dim.name
-          );
-          const attributeNames = res.data.attributes.map((attr) => attr.name);
-          setDimensions(dimensionNames);
-          setAttributes(attributeNames);
-        });
+      client.ArrayApi.getArray(
+        workspace,
+        teamspace,
+        assetId,
+        "application/json"
+      ).then((res) => {
+        const dimensionNames = res.data.domain.dimensions.map(
+          (dim) => dim.name
+        );
+        const attributeNames = res.data.attributes.map((attr) => attr.name);
+        setDimensions(dimensionNames);
+        setAttributes(attributeNames);
+      });
     }
-  }, [quickStartArray, arrayName, namespace]);
+  }, [quickStartArray, workspace, teamspace, assetId]);
 
   React.useEffect(() => {
     if (queryString) {
@@ -127,7 +130,12 @@ const QuickstartWrite = () => {
     };
     setLoading(true);
 
-    const generator = client.query.ReadQuery(namespace, arrayName, query);
+    const generator = client.query.ReadQuery(
+      workspace,
+      teamspace,
+      assetId,
+      query
+    );
     generator
       .next()
       .then(({ value }) => {
@@ -162,12 +170,12 @@ const QuickstartWrite = () => {
     });
 
     setQueryString(
-      createWriteQuery(JSON.stringify(query), namespace, arrayName)
+      createWriteQuery(JSON.stringify(query), workspace, teamspace, assetId)
     );
 
     setWriteLoading(true);
     client.query
-      .WriteQuery(namespace, arrayName, query)
+      .WriteQuery(workspace, teamspace, assetId, query)
       .then((res) => {
         getArray();
         handleOk();

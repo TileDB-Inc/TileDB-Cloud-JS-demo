@@ -2,7 +2,7 @@ import React from "react";
 import { Form, InputNumber, Button, Table, Typography, Slider } from "antd";
 import LidarVis from "../../components/LidarVis";
 import Timeline from "../../components/Timeline/Timeline";
-import client from '../../helpers/client';
+import client from "../../helpers/client";
 
 const columns = [
   {
@@ -108,8 +108,9 @@ const AutzenForm = () => {
     setLoading(true);
 
     for await (let results of client.query.ReadQuery(
-      "TileDB-Inc",
-      "autzen_tiledb",
+      import.meta.env.VITE_AUTZEN_WORKSPACE,
+      import.meta.env.VITE_AUTZEN_TEAMSPACE,
+      import.meta.env.VITE_AUTZEN_ASSET_ID,
       query
     )) {
       if (stop.current) {

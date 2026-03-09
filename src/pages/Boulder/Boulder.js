@@ -25,7 +25,7 @@ const query = {
 
 (async function() {
   // Iterate over all results in case query is incomplete
-  for await (let results of client.query.ReadQuery("TileDB-Inc", "boulder", query)) {
+  for await (let results of client.query.ReadQuery("workspace", "teamspace", "assetId", query)) {
       console.log(results);
   }
 })();

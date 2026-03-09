@@ -1,6 +1,6 @@
 import React from "react";
 import { Form, Input, Button, Table, Typography } from "antd";
-import client from '../../helpers/client';
+import client from "../../helpers/client";
 
 const columns = [
   {
@@ -32,13 +32,14 @@ const GtexForm = () => {
     const query = {
       layout: "row-major",
       ranges: ranges,
-      bufferSize: 150000000,
+      bufferSize: 1500000000,
     };
     setLoading(true);
 
     const generator = client.query.ReadQuery(
-      "TileDB-Inc",
-      "gtex-analysis-rnaseqc-gene-tpm",
+      import.meta.env.VITE_GTEX_WORKSPACE,
+      import.meta.env.VITE_GTEX_TEAMSPACE,
+      import.meta.env.VITE_GTEX_ASSET_ID,
       query
     );
     generator
@@ -79,7 +80,7 @@ const GtexForm = () => {
         wrapperCol={{ span: 24 }}
         style={{ marginTop: "32px" }}
         initialValues={{
-          gene_id: "ENSG00000202059.1",
+          gene_id: "ENSG00000141510.16",
         }}
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}

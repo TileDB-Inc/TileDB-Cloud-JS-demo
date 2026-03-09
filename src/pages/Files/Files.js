@@ -2,7 +2,7 @@ import React from "react";
 import { Button, Divider, Typography } from "antd";
 import CodeSnippet from "../../components/CodeSnippet";
 import { PlayCircleFilled } from "@ant-design/icons";
-import client from '../../helpers/client';
+import client from "../../helpers/client";
 
 const { Title, Paragraph } = Typography;
 
@@ -33,8 +33,8 @@ const Files = () => {
     async function fetchData() {
       setLoading(true);
       const { buffer, mimeType } = await client.getFileContents(
-        "TileDB-Inc",
-        "VLDB17_TileDB"
+        import.meta.env.VITE_FILES_NAMESPACE,
+        import.meta.env.VITE_FILES_ARRAY
       );
       const blob = new Blob([buffer], { type: mimeType });
       const pdfurl = window.URL.createObjectURL(blob) + "#view=FitW";
